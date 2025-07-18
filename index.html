@@ -1,0 +1,1234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI University Event Planner - Upside Down</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome CDN for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- jsPDF CDN for PDF generation -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <style>
+        /* Custom styles for Inter font and general body */
+        body {
+            font-family: 'Inter', sans-serif;
+            /* Upside Down Theme: Dark, ominous background with radial glow */
+            background: radial-gradient(circle at center, #2a0a0a 0%, #1a0505 50%, #0a0000 100%);
+            color: #e0e0e0; /* Lighter text for dark background */
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden; /* Prevent horizontal scroll from animations */
+        }
+
+        /* Glitch Effect for text */
+        .glitch-text {
+            animation: glitch 1.5s infinite;
+            position: relative;
+            display: inline-block;
+        }
+
+        @keyframes glitch {
+            0% { transform: translate(0); }
+            20% { transform: translate(-2px, 2px); }
+            40% { transform: translate(-2px, -2px); }
+            60% { transform: translate(2px, 2px); }
+            80% { transform: translate(2px, -2px); }
+            100% { transform: translate(0); }
+        }
+
+        /* Pulsating Glow for elements */
+        .pulse-glow {
+            animation: pulseGlow 2s infinite alternate;
+        }
+
+        @keyframes pulseGlow {
+            0% { box-shadow: 0 0 5px rgba(255, 0, 0, 0.4), 0 0 10px rgba(0, 255, 0, 0.2); }
+            100% { box-shadow: 0 0 15px rgba(255, 0, 0, 0.8), 0 0 25px rgba(0, 255, 0, 0.4); }
+        }
+
+        /* Custom styling for tooltips */
+        .tooltip {
+            position: relative;
+            display: inline-block;
+            cursor: help;
+        }
+
+        .tooltip .tooltiptext {
+            visibility: hidden;
+            width: 180px;
+            background-color: #550000; /* Darker, ominous tooltip background */
+            color: #fff;
+            text-align: center;
+            border-radius: 6px;
+            padding: 5px 0;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%;
+            left: 50%;
+            margin-left: -90px;
+            opacity: 0;
+            transition: opacity 0.3s;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.4);
+            border: 1px solid #ff0000; /* Red border */
+        }
+
+        .tooltip .tooltiptext::after {
+            content: "";
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            margin-left: -5px;
+            border-width: 5px;
+            border-style: solid;
+            border-color: #550000 transparent transparent transparent;
+        }
+
+        .tooltip:hover .tooltiptext {
+            visibility: visible;
+            opacity: 1;
+        }
+
+        /* Loading spinner animation */
+        .spinner {
+            border: 4px solid rgba(255, 0, 0, 0.2);
+            border-left-color: #ff0000; /* Red spinner */
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Modal specific styles */
+        .modal {
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.8); /* Even darker overlay */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.4s ease, visibility 0.4s ease;
+        }
+
+        .modal.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal-content {
+            background-color: #1a0505; /* Dark, eerie modal background */
+            color: #e0e0e0;
+            margin: auto;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 8px 20px rgba(255, 0, 0, 0.4), 0 0 30px rgba(0, 255, 0, 0.2); /* Red/green glow */
+            width: 90%;
+            max-width: 500px;
+            text-align: center;
+            transform: scale(0.8); /* Start smaller */
+            transition: transform 0.4s ease;
+            border: 2px solid #ff0000; /* Red border */
+        }
+
+        .modal.show .modal-content {
+            transform: scale(1); /* Scale up */
+        }
+
+        .close-button {
+            color: #ff0000; /* Red close button */
+            float: right;
+            font-size: 32px;
+            font-weight: bold;
+            line-height: 1;
+        }
+
+        .close-button:hover,
+        .close-button:focus {
+            color: #ff5555;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        /* Enhanced button styles */
+        .btn-primary {
+            background: linear-gradient(45deg, #4d0000, #800000); /* Dark red gradient */
+            color: #e0e0e0; /* Lighter text */
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+            border: 1px solid #ff0000; /* Red border */
+        }
+        .btn-primary:hover {
+            transform: translateY(-2px) scale(1.02);
+            box-shadow: 0 6px 12px rgba(255, 0, 0, 0.4), 0 0 15px rgba(0, 255, 0, 0.2); /* Red/green glow on hover */
+            background: linear-gradient(45deg, #800000, #4d0000); /* Invert gradient on hover */
+        }
+        .btn-primary::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.1); /* Subtle shimmer */
+            transform: skewX(-30deg);
+            transition: all 0.5s ease;
+            z-index: -1;
+        }
+        .btn-primary:hover::before {
+            left: 100%;
+        }
+
+        /* Specific styles for action buttons - adjusted for theme */
+        #downloadPdfBtn {
+            background: linear-gradient(45deg, #0a3d0a, #006400); /* Dark green gradient */
+            border-color: #00ff00;
+        }
+        #downloadPdfBtn:hover {
+            background: linear-gradient(45deg, #006400, #0a3d0a);
+        }
+
+        #editPlanBtn {
+            background: linear-gradient(45deg, #4d4d00, #808000); /* Dark yellow/green gradient */
+            border-color: #ffff00;
+        }
+        #editPlanBtn:hover {
+            background: linear-gradient(45deg, #808000, #4d4d00);
+        }
+
+        #startNewBtn {
+            background: linear-gradient(45deg, #660000, #990000); /* Darker red gradient */
+            border-color: #ff0000;
+        }
+        #startNewBtn:hover {
+            background: linear-gradient(45deg, #990000, #660000);
+        }
+
+        /* Card enhancements - adjusted for theme */
+        .card {
+            background-color: rgba(26, 5, 5, 0.8); /* Semi-transparent dark red */
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(255, 0, 0, 0.2), 0 0 20px rgba(0, 255, 0, 0.1); /* Subtle red/green glow */
+            padding: 24px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border: 1px solid #4d0000; /* Dark red border */
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(255, 0, 0, 0.4), 0 0 30px rgba(0, 255, 0, 0.2); /* More pronounced glow */
+        }
+
+        /* Input field focus glow - adjusted for theme */
+        input:focus, select:focus {
+            border-color: #ff0000; /* Red border on focus */
+            box-shadow: 0 0 0 3px rgba(255, 0, 0, 0.4); /* Red glow */
+            outline: none;
+        }
+
+        /* Header gradient - adjusted for theme */
+        header {
+            background: linear-gradient(90deg, #330000, #660000, #990000); /* Darker, more ominous red gradient */
+            border-bottom: 2px solid #ff0000; /* Red border */
+        }
+
+        /* Icon colors */
+        .text-blue-500 {
+            color: #00ff00; /* Sickly green for icons */
+        }
+        .text-gray-700 {
+            color: #c0c0c0; /* Lighter grey for labels */
+        }
+        .text-gray-800 {
+            color: #e0e0e0; /* Lighter grey for main headings */
+        }
+        .text-gray-900 {
+            color: #ffffff; /* White for important text */
+        }
+        .text-gray-600 {
+            color: #a0a0a0; /* Medium grey */
+        }
+        .text-gray-500 {
+            color: #808080; /* Darker grey for tooltips info icon */
+        }
+        .text-blue-600 {
+            color: #00ff00; /* Sickly green for hashtags */
+        }
+        .text-sm.font-light {
+            color: #e0e0e0; /* Table text */
+        }
+        .bg-gray-100 {
+            background-color: #330000; /* Darker table header */
+            color: #e0e0e0;
+        }
+        .border-gray-200 {
+            border-color: #4d0000; /* Darker table borders */
+        }
+        .hover\:bg-gray-50:hover {
+            background-color: #2a0a0a; /* Darker table row hover */
+        }
+        .bg-gray-50 {
+            background-color: #1a0505; /* Darker pre background */
+        }
+
+
+        /* Section entry animation */
+        .fade-in-up {
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeInUp 0.6s ease-out forwards;
+        }
+
+        @keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col">
+    <!-- Header -->
+    <header class="text-white p-4 shadow-md sticky top-0 z-50">
+        <div class="container mx-auto flex justify-between items-center">
+            <h1 class="text-2xl font-bold glitch-text">AI University Event Planner</h1>
+            <nav>
+                <!-- Optional: Navigation links can go here -->
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Content Area -->
+    <main class="flex-grow container mx-auto p-4 md:p-8">
+        <div class="rounded-lg shadow-xl p-6 md:p-8 mb-8 card pulse-glow">
+            <h2 class="text-3xl font-extrabold text-center mb-6 glitch-text">Plan Your University Event</h2>
+            <form id="eventForm" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Event Type -->
+                <div class="relative">
+                    <label for="eventType" class="block text-sm font-semibold mb-2">
+                        <i class="fas fa-calendar-alt mr-2"></i>Event Type
+                    </label>
+                    <select id="eventType" name="eventType" required
+                            class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 transition duration-200 bg-gray-900 text-white">
+                        <option value="">Select Event Type</option>
+                        <option value="Seminar">Seminar</option>
+                        <option value="Fest">Fest</option>
+                        <option value="Hackathon">Hackathon</option>
+                        <option value="Workshop">Workshop</option>
+                        <option value="Conference">Conference</option>
+                        <option value="Cultural Event">Cultural Event</option>
+                        <option value="Sports Event">Sports Event</option>
+                        <option value="Webinar">Webinar</option>
+                        <option value="Exhibition">Exhibition</option>
+                    </select>
+                </div>
+
+                <!-- Audience -->
+                <div class="relative">
+                    <label for="audience" class="block text-sm font-semibold mb-2">
+                        <i class="fas fa-users mr-2"></i>Audience
+                    </label>
+                    <input type="text" id="audience" name="audience" placeholder="e.g., All University Students, Engineering Freshmen" required
+                           class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 transition duration-200 bg-gray-900 text-white">
+                </div>
+
+                <!-- Theme -->
+                <div class="relative">
+                    <label for="theme" class="block text-sm font-semibold mb-2">
+                        <i class="fas fa-palette mr-2"></i>Theme
+                    </label>
+                    <input type="text" id="theme" name="theme" placeholder="e.g., Future of AI, Sustainable Living" required
+                           class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 transition duration-200 bg-gray-900 text-white">
+                </div>
+
+                <!-- Date -->
+                <div class="relative">
+                    <label for="eventDate" class="block text-sm font-semibold mb-2">
+                        <i class="fas fa-calendar-day mr-2"></i>Date
+                    </label>
+                    <input type="date" id="eventDate" name="eventDate" required
+                           class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 transition duration-200 bg-gray-900 text-white">
+                </div>
+
+                <!-- Duration -->
+                <div class="relative">
+                    <label for="duration" class="block text-sm font-semibold mb-2">
+                        <i class="fas fa-hourglass-half mr-2"></i>Duration (Days)
+                    </label>
+                    <input type="number" id="duration" name="duration" min="0.5" step="0.5" placeholder="e.g., 1, 0.5" required
+                           class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 transition duration-200 bg-gray-900 text-white">
+                </div>
+
+                <!-- Mode -->
+                <div class="relative">
+                    <label for="mode" class="block text-sm font-semibold mb-2">
+                        <i class="fas fa-globe mr-2"></i>Mode
+                    </label>
+                    <select id="mode" name="mode" required
+                            class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 transition duration-200 bg-gray-900 text-white">
+                        <option value="">Select Mode</option>
+                        <option value="Online">Online</option>
+                        <option value="Offline">Offline</option>
+                        <option value="Hybrid">Hybrid</option>
+                    </select>
+                </div>
+
+                <!-- Venue (conditionally displayed) -->
+                <div id="venueGroup" class="relative hidden">
+                    <label for="venue" class="block text-sm font-semibold mb-2">
+                        <i class="fas fa-map-marker-alt mr-2"></i>Venue
+                        <span class="tooltip text-xs ml-1">
+                            <i class="fas fa-info-circle"></i>
+                            <span class="tooltiptext">Click to autofill nearest venues based on your location.</span>
+                        </span>
+                    </label>
+                    <input type="text" id="venue" name="venue" placeholder="e.g., University Auditorium, City Convention Center"
+                           class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 transition duration-200 bg-gray-900 text-white">
+                    <button type="button" id="autofillVenueBtn" class="absolute right-2 top-1/2 -translate-y-1/2 p-2 rounded-full bg-red-700 text-white hover:bg-red-800 focus:outline-none focus:ring-2 focus:ring-red-500 transition duration-200">
+                        <i class="fas fa-location-crosshairs"></i>
+                    </button>
+                </div>
+
+                <!-- Budget Limit -->
+                <div class="relative">
+                    <label for="budgetLimit" class="block text-sm font-semibold mb-2">
+                        <i class="fas fa-money-bill-wave mr-2"></i>Budget Limit (INR)
+                        <span class="tooltip text-xs ml-1">
+                            <i class="fas fa-info-circle"></i>
+                            <span class="tooltiptext">Estimated budget in Indian Rupees.</span>
+                        </span>
+                    </label>
+                    <input type="number" id="budgetLimit" name="budgetLimit" min="0" placeholder="e.g., 50000" required
+                           class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 transition duration-200 bg-gray-900 text-white">
+                </div>
+
+                <!-- Submit Button -->
+                <div class="md:col-span-2 flex justify-center mt-6">
+                    <button type="submit"
+                            class="btn-primary font-bold py-3 px-8 rounded-full shadow-lg focus:outline-none focus:ring-4 focus:ring-red-300">
+                        <i class="fas fa-magic mr-2"></i>Generate Plan
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Loading Spinner -->
+        <div id="loadingSpinner" class="hidden flex flex-col justify-center items-center py-10">
+            <div class="spinner mb-4 pulse-glow"></div>
+            <p class="text-lg text-gray-600 glitch-text">Generating your event plan...</p>
+            <p class="text-sm text-gray-500 mt-2">This might take a moment as our AI crafts the perfect plan!</p>
+        </div>
+
+        <!-- AI Generated Plan Display -->
+        <div id="planOutput" class="hidden">
+            <h2 class="text-3xl font-extrabold text-center mb-8 fade-in-up glitch-text">Your Event Plan</h2>
+
+            <!-- Event Title & Description -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+                <div class="card fade-in-up" style="animation-delay: 0.1s;">
+                    <h3 class="text-2xl font-bold mb-4 flex items-center"><i class="fas fa-heading mr-3"></i>Event Title</h3>
+                    <p id="outputTitle" class="text-xl font-semibold"></p>
+                </div>
+                <div class="card fade-in-up" style="animation-delay: 0.2s;">
+                    <h3 class="text-2xl font-bold mb-4 flex items-center"><i class="fas fa-file-alt mr-3"></i>Event Description</h3>
+                    <p id="outputDescription" class="leading-relaxed"></p>
+                </div>
+            </div>
+
+            <!-- Sports Seminar Names & Quotes (conditionally displayed) -->
+            <div id="sportsContent" class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8 hidden">
+                <div class="card fade-in-up" style="animation-delay: 0.3s;">
+                    <h3 class="text-2xl font-bold mb-4 flex items-center"><i class="fas fa-trophy mr-3"></i>Sports Seminar Name Ideas</h3>
+                    <ul id="outputSportsNames" class="list-disc list-inside space-y-2">
+                        <!-- Sports names will be inserted here -->
+                    </ul>
+                </div>
+                <div class="card fade-in-up" style="animation-delay: 0.4s;">
+                    <h3 class="text-2xl font-bold mb-4 flex items-center"><i class="fas fa-quote-left mr-3"></i>Motivational Sports Quotes</h3>
+                    <ul id="outputSportsQuotes" class="list-disc list-inside space-y-2">
+                        <!-- Sports quotes will be inserted here -->
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Sample Schedule -->
+            <div class="card mb-8 fade-in-up" style="animation-delay: 0.5s;">
+                <h3 class="text-2xl font-bold mb-4 flex items-center"><i class="fas fa-clipboard-list mr-3"></i>Sample Schedule</h3>
+                <div class="overflow-x-auto">
+                    <table class="min-w-full border rounded-lg">
+                        <thead>
+                            <tr class="uppercase text-sm leading-normal">
+                                <th class="py-3 px-6 text-left">Time</th>
+                                <th class="py-3 px-6 text-left">Activity</th>
+                                <th class="py-3 px-6 text-left">Speaker/Performer</th>
+                            </tr>
+                        </thead>
+                        <tbody id="outputSchedule" class="text-sm font-light">
+                            <!-- Schedule items will be inserted here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Poster Design Ideas & Social Media -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+                <div class="card fade-in-up" style="animation-delay: 0.6s;">
+                    <h3 class="text-2xl font-bold mb-4 flex items-center"><i class="fas fa-paint-brush mr-3"></i>Poster Design Ideas</h3>
+                    <ul id="outputPosterIdeas" class="list-disc list-inside space-y-2">
+                        <!-- Poster ideas will be inserted here -->
+                    </ul>
+                </div>
+                <div class="card fade-in-up" style="animation-delay: 0.7s;">
+                    <h3 class="text-2xl font-bold mb-4 flex items-center"><i class="fas fa-share-alt mr-3"></i>Social Media Caption & Hashtags</h3>
+                    <p id="outputSocialMedia" class="leading-relaxed"></p>
+                    <p id="outputHashtags" class="font-medium mt-2"></p>
+                </div>
+            </div>
+
+            <!-- Required Committees & Volunteer Requirement -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+                <div class="card fade-in-up" style="animation-delay: 0.8s;">
+                    <h3 class="text-2xl font-bold mb-4 flex items-center"><i class="fas fa-users-cog mr-3"></i>Required Committees</h3>
+                    <ul id="outputCommittees" class="list-disc list-inside space-y-2">
+                        <!-- Committees will be inserted here -->
+                    </ul>
+                </div>
+                <div class="card fade-in-up" style="animation-delay: 0.9s;">
+                    <h3 class="text-2xl font-bold mb-4 flex items-center"><i class="fas fa-handshake mr-3"></i>Volunteer Requirement</h3>
+                    <ul id="outputVolunteers" class="list-disc list-inside space-y-2">
+                        <!-- Volunteers will be inserted here -->
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Budget Breakdown & Decoration Suggestions -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+                <div class="card fade-in-up" style="animation-delay: 1.0s;">
+                    <h3 class="text-2xl font-bold mb-4 flex items-center"><i class="fas fa-chart-pie mr-3"></i>Budget Breakdown</h3>
+                    <ul id="outputBudget" class="list-disc list-inside space-y-2">
+                        <!-- Budget breakdown will be inserted here -->
+                    </ul>
+                </div>
+                <div class="card fade-in-up" style="animation-delay: 1.1s;">
+                    <h3 class="text-2xl font-bold mb-4 flex items-center"><i class="fas fa-lightbulb mr-3"></i>Decoration Suggestions</h3>
+                    <ul id="outputDecorations" class="list-disc list-inside space-y-2">
+                        <!-- Decorations will be inserted here -->
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Letter of Permission -->
+            <div class="card mb-8 fade-in-up" style="animation-delay: 1.2s;">
+                <h3 class="text-2xl font-bold mb-4 flex items-center"><i class="fas fa-envelope-open-text mr-3"></i>Letter of Permission</h3>
+                <pre id="outputLetter" class="p-4 rounded-lg text-sm whitespace-pre-wrap font-mono leading-relaxed border"></pre>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="flex flex-col sm:flex-row justify-center gap-4 mt-8 fade-in-up" style="animation-delay: 1.3s;">
+                <button id="downloadPdfBtn"
+                        class="btn-primary font-bold py-3 px-6 rounded-full shadow-lg focus:outline-none focus:ring-4 focus:ring-green-300">
+                    <i class="fas fa-download mr-2"></i>Download Checklist & Letter (PDF)
+                </button>
+                <button id="editPlanBtn"
+                        class="btn-primary font-bold py-3 px-6 rounded-full shadow-lg focus:outline-none focus:ring-4 focus:ring-yellow-300">
+                    <i class="fas fa-edit mr-2"></i>Edit Plan
+                </button>
+                <button id="startNewBtn"
+                        class="btn-primary font-bold py-3 px-6 rounded-full shadow-lg focus:outline-none focus:ring-4 focus:ring-red-300">
+                    <i class="fas fa-plus mr-2"></i>Start New
+                </button>
+            </div>
+        </div>
+    </main>
+
+    <!-- Custom Alert/Confirmation Modal -->
+    <div id="customModal" class="modal">
+        <div class="modal-content">
+            <span class="close-button">&times;</span>
+            <p id="modalMessage" class="text-lg mb-4"></p>
+            <div id="modalActions" class="flex justify-center gap-4">
+                <!-- Buttons will be dynamically added here -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Get DOM elements
+        const eventForm = document.getElementById('eventForm');
+        const modeSelect = document.getElementById('mode');
+        const venueGroup = document.getElementById('venueGroup');
+        const venueInput = document.getElementById('venue');
+        const autofillVenueBtn = document.getElementById('autofillVenueBtn');
+        const loadingSpinner = document.getElementById('loadingSpinner');
+        const planOutput = document.getElementById('planOutput');
+
+        const outputTitle = document.getElementById('outputTitle');
+        const outputDescription = document.getElementById('outputDescription');
+        const outputSchedule = document.getElementById('outputSchedule');
+        const outputPosterIdeas = document.getElementById('outputPosterIdeas');
+        const outputSocialMedia = document.getElementById('outputSocialMedia');
+        const outputHashtags = document.getElementById('outputHashtags');
+        const outputCommittees = document.getElementById('outputCommittees');
+        const outputVolunteers = document.getElementById('outputVolunteers');
+        const outputBudget = document.getElementById('outputBudget');
+        const outputLetter = document.getElementById('outputLetter');
+        const outputDecorations = document.getElementById('outputDecorations');
+
+        // New elements for sports suggestions
+        const sportsContentDiv = document.getElementById('sportsContent');
+        const outputSportsNames = document.getElementById('outputSportsNames');
+        const outputSportsQuotes = document.getElementById('outputSportsQuotes');
+
+
+        const downloadPdfBtn = document.getElementById('downloadPdfBtn');
+        const editPlanBtn = document.getElementById('editPlanBtn');
+        const startNewBtn = document.getElementById('startNewBtn');
+
+        // Modal elements
+        const customModal = document.getElementById('customModal');
+        const modalMessage = document.getElementById('modalMessage');
+        const modalActions = document.getElementById('modalActions');
+        const closeModalButton = customModal.querySelector('.close-button');
+
+        // Global variable to store the generated plan for PDF generation
+        let currentPlanData = {};
+
+        // Function to show custom modal
+        function showCustomModal(message, type = 'alert', onConfirm = null) {
+            modalMessage.textContent = message;
+            modalActions.innerHTML = ''; // Clear previous buttons
+
+            if (type === 'alert') {
+                const okButton = document.createElement('button');
+                okButton.textContent = 'OK';
+                okButton.className = 'bg-red-700 text-white px-4 py-2 rounded-md hover:bg-red-800 transition duration-200';
+                okButton.onclick = () => customModal.classList.remove('show');
+                modalActions.appendChild(okButton);
+            } else if (type === 'confirm') {
+                const confirmButton = document.createElement('button');
+                confirmButton.textContent = 'Confirm';
+                confirmButton.className = 'bg-green-700 text-white px-4 py-2 rounded-md hover:bg-green-800 transition duration-200';
+                confirmButton.onclick = () => {
+                    customModal.classList.remove('show');
+                    if (onConfirm) onConfirm();
+                };
+                const cancelButton = document.createElement('button');
+                cancelButton.textContent = 'Cancel';
+                cancelButton.className = 'bg-gray-700 text-white px-4 py-2 rounded-md hover:bg-gray-800 transition duration-200';
+                cancelButton.onclick = () => customModal.classList.remove('show');
+                modalActions.appendChild(confirmButton);
+                modalActions.appendChild(cancelButton);
+            }
+            customModal.classList.add('show');
+        }
+
+        // Close modal when close button is clicked
+        closeModalButton.onclick = () => customModal.classList.remove('show');
+        // Close modal when clicking outside of the content
+        window.onclick = (event) => {
+            if (event.target == customModal) {
+                customModal.classList.remove('show');
+            }
+        };
+
+
+        // Conditional display for Venue input
+        modeSelect.addEventListener('change', () => {
+            if (modeSelect.value === 'Offline' || modeSelect.value === 'Hybrid') {
+                venueGroup.classList.remove('hidden');
+                venueInput.setAttribute('required', 'true');
+            } else {
+                venueGroup.classList.add('hidden');
+                venueInput.removeAttribute('required');
+                venueInput.value = ''; // Clear venue if not applicable
+            }
+        });
+
+        // Autofill Venue (Mock Geolocation)
+        autofillVenueBtn.addEventListener('click', () => {
+            if (navigator.geolocation) {
+                showCustomModal("Requesting your location to autofill nearest venues...", "alert");
+                navigator.geolocation.getCurrentPosition(
+                    (position) => {
+                        const lat = position.coords.latitude;
+                        const lon = position.coords.longitude;
+                        // Mock data for nearest colleges/venues
+                        const mockVenues = [
+                            "Hawkins Community Hall",
+                            "Melvald's General Store Basement",
+                            "Starcourt Mall Food Court",
+                            "Hawkins National Laboratory Annex",
+                            "The Creel House Attic"
+                        ];
+                        const randomVenue = mockVenues[Math.floor(Math.random() * mockVenues.length)];
+                        venueInput.value = randomVenue;
+                        showCustomModal(`Location found! Autofilled: ${randomVenue}`, "alert");
+                    },
+                    (error) => {
+                        console.error("Geolocation error:", error);
+                        showCustomModal("Could not retrieve your location. Please enter venue manually.", "alert");
+                    },
+                    { enableHighAccuracy: true, timeout: 5000, maximumAge: 0 }
+                );
+            } else {
+                showCustomModal("Geolocation is not supported by your browser. Please enter venue manually.", "alert");
+            }
+        });
+
+        // Mock AI Generation Function
+        async function generateEventPlan(formData) {
+            // Simulate API call delay
+            await new Promise(resolve => setTimeout(resolve, 2000));
+
+            const { eventType, audience, theme, eventDate, duration, mode, venue, budgetLimit } = formData;
+
+            // Basic logic for committees and volunteers based on event type
+            let committees = [];
+            let volunteers = [];
+            let budgetBreakdown = [];
+            let schedule = [];
+            let posterIdeas = [];
+            let socialMediaCaption = "";
+            let hashtags = "";
+            let eventTitle = "";
+            let eventDescription = "";
+            let decorationSuggestions = [];
+            let sportsSeminarNames = []; // New
+            let sportsQuotes = []; // New
+
+            // Determine committees and volunteers
+            switch (eventType) {
+                case 'Seminar':
+                case 'Workshop':
+                case 'Webinar':
+                    committees = ['Logistics Committee', 'Publicity Committee', 'Technical Committee', 'Hospitality Committee'];
+                    volunteers = [
+                        { committee: 'Logistics', count: 5 },
+                        { committee: 'Publicity', count: 3 },
+                        { committee: 'Technical', count: 4 },
+                        { committee: 'Hospitality', count: 3 }
+                    ];
+                    eventTitle = `The ${theme} Enigma: A ${eventType} on ${eventDate}`;
+                    eventDescription = `Unravel the mysteries of "${theme}" in this chilling ${eventType} tailored for ${audience}. Dare to delve into the unknown and emerge with new insights.`;
+                    schedule = [
+                        { time: '10:00 AM', activity: 'Arrival & Demogorgon Sightings', speaker: 'Event Team' },
+                        { time: '10:30 AM', activity: `Keynote: Decoding the ${theme} Phenomenon`, speaker: 'Dr. Brenner' },
+                        { time: '11:30 AM', activity: 'Mind Flayer Protocol Discussion', speaker: 'Eleven & Co.' },
+                        { time: '01:00 PM', activity: 'Waffle Break & Conspiracy Theories', speaker: '' }
+                    ];
+                    posterIdeas = [
+                        `Dark silhouette of a monster against a red sky, flickering lights.`,
+                        `Retro 80s style with distressed textures, neon outlines, and subtle Upside Down elements.`
+                    ];
+                    socialMediaCaption = `👻 Something strange is happening! Join our "${eventTitle}" ${eventType} on ${eventDate}. Explore "${theme}" and uncover secrets. Register if you dare!`;
+                    hashtags = `#${eventType.replace(/\s/g, '')} #${theme.replace(/\s/g, '')} #UpsideDownEvents #HawkinsMystery`;
+                    decorationSuggestions = [
+                        `Flickering string lights, vines hanging from ceilings, dark red/black drapes.`,
+                        `Mossy textures, eerie shadows, and subtle monster silhouettes.`,
+                        `Retro 80s props: old TVs, cassette players, D&D board games.`
+                    ];
+
+                    // Specific for Sports Seminar
+                    if (theme.toLowerCase().includes('sport') || theme.toLowerCase().includes('fitness') || theme.toLowerCase().includes('athletic')) {
+                        sportsSeminarNames = [
+                            `The Winning Edge: Strategies for Peak Performance`,
+                            `Mind Games: Psychology of Sports Success`,
+                            `Beyond the Game: Sports for Life`,
+                            `Future of Athletics: Tech & Training`,
+                            `Unleash Your Inner Champion`
+                        ];
+                        sportsQuotes = [
+                            `"The only way to prove that you’re a good sport is to lose." - Ernie Banks`,
+                            `"I hated every minute of training, but I said, 'Don’t quit. Suffer now and live the rest of your life as a champion.'" - Muhammad Ali`,
+                            `"It's not whether you get knocked down; it's whether you get up." - Vince Lombardi`,
+                            `"You miss 100% of the shots you don’t take." - Wayne Gretzky`,
+                            `"Champions keep playing until they get it right." - Billie Jean King`
+                        ];
+                    }
+                    break;
+                case 'Fest':
+                case 'Cultural Event':
+                case 'Sports Event': // Also include Sports Event here
+                    committees = ['Logistics Committee', 'Publicity Committee', 'Hospitality Committee', 'Sponsorship Committee', 'Security Committee', 'Event Management Committee'];
+                    volunteers = [
+                        { committee: 'Logistics', count: 15 },
+                        { committee: 'Publicity', count: 10 },
+                        { committee: 'Hospitality', count: 8 },
+                        { committee: 'Sponsorship', count: 5 },
+                        { committee: 'Security', count: 7 },
+                        { committee: 'Event Management', count: 12 }
+                    ];
+                    eventTitle = `The ${theme} Anomaly: University ${eventType}`;
+                    eventDescription = `Brace yourselves for "${eventTitle}"! A spectacular ${eventType} celebrating "${theme}" for ${audience}, with a mysterious twist. Expect thrilling performances, strange competitions, and otherworldly fun!`;
+                    schedule = [
+                        { time: '09:00 AM', activity: 'Gates Open & Portal Entry', speaker: '' },
+                        { time: '10:00 AM', activity: 'Inauguration Ceremony by Hawkins Mayor', speaker: 'Mayor Larry Kline' },
+                        { time: '11:00 AM', activity: 'Demogorgon Dodgeball / Cultural Rifts', speaker: 'Various Groups' },
+                        { time: '02:00 PM', activity: 'Scoops Ahoy Ice Cream & Arcade Games', speaker: '' }
+                    ];
+                    posterIdeas = [
+                        `Distorted town map of Hawkins, with red lightning and shadowy figures.`,
+                        `Retro comic book style, featuring the main characters and a hint of the Upside Down.`
+                    ];
+                    socialMediaCaption = `😱 The veil is thinning! "${eventTitle}" is upon us! Join us on ${eventDate} for an unforgettable ${eventType} filled with ${theme} and supernatural vibes. Don't miss out on the adventure!`;
+                    hashtags = `#${eventType.replace(/\s/g, '')} #${theme.replace(/\s/g, '')} #StrangerThingsVibes #HawkinsHigh`;
+                    decorationSuggestions = [
+                        `Dark, vine-covered archways.`,
+                        `Red and black balloons, pulsating lights.`,
+                        `Replicas of iconic Stranger Things elements: Byers' living room wall, arcade machines.`
+                    ];
+
+                    // Specific for Sports Event
+                    if (eventType === 'Sports Event') {
+                        sportsSeminarNames = [
+                            `Varsity Victory: Sportsmanship & Success`,
+                            `Athletic Apex: Reaching Your Potential`,
+                            `Game Changers: Innovation in University Sports`,
+                            `The Spirit of Competition: A Sports Summit`
+                        ];
+                        sportsQuotes = [
+                            `"Winners never quit and quitters never win." - Vince Lombardi`,
+                            `"The harder the battle, the sweeter the victory." - Les Brown`,
+                            `"Sports do not build character. They reveal it." - Heywood Broun`,
+                            `"It's not the will to win that matters—everyone has that. It's the will to prepare to win that matters." - Paul Bryant`
+                        ];
+                    }
+                    break;
+                case 'Hackathon':
+                    committees = ['Logistics Committee', 'Publicity Committee', 'Technical Committee', 'Sponsorship Committee', 'Mentorship Committee'];
+                    volunteers = [
+                        { committee: 'Logistics', count: 8 },
+                        { committee: 'Publicity', count: 5 },
+                        { committee: 'Technical', count: 10 },
+                        { committee: 'Sponsorship', count: 4 },
+                        { committee: 'Mentorship', count: 6 }
+                    ];
+                    eventTitle = `Code-Gate: ${theme} Hackathon`;
+                    eventDescription = `Open the gate to innovation at Code-Gate: ${theme} Hackathon! A 24-hour coding challenge for ${audience} to build solutions and hack the Upside Down around "${theme}".`;
+                    schedule = [
+                        { time: '09:00 AM', activity: 'Opening Ceremony & Problem Statement Glitch', speaker: 'Organizers' },
+                        { time: '10:00 AM', activity: 'Coding Begins! (Beware of Power Surges)', speaker: 'Participants' },
+                        { time: '08:00 PM', activity: 'Demodog Debugging Session', speaker: 'Industry Experts' },
+                        { time: '09:00 AM (Next Day)', activity: 'Project Submissions & Mind Flayer Judging', speaker: '' }
+                    ];
+                    posterIdeas = [
+                        `Digital glitch art with code snippets and a shadowy monster lurking.`,
+                        `Retro computer screen aesthetic with green text, hinting at secret government projects.`
+                    ];
+                    socialMediaCaption = `👾 Code-Gate is opening! 💻 Join our ${theme} Hackathon on ${eventDate}. Build, innovate, and survive the night! Register your team now!`;
+                    hashtags = `#Hackathon #${theme.replace(/\s/g, '')} #CodeTheUpsideDown #HawkinsLab`;
+                    decorationSuggestions = [
+                        `Server racks with flickering lights.`,
+                        `Whiteboards covered in complex equations and strange symbols.`,
+                        `Comfortable, slightly eerie coding stations.`
+                    ];
+                    break;
+                case 'Exhibition':
+                    committees = ['Logistics Committee', 'Publicity Committee', 'Hospitality Committee', 'Stall Management Committee', 'Security Committee'];
+                    volunteers = [
+                        { committee: 'Logistics', count: 10 },
+                        { committee: 'Publicity', count: 7 },
+                        { committee: 'Hospitality', count: 5 },
+                        { committee: 'Stall Management', count: 8 },
+                        { committee: 'Security', count: 5 }
+                    ];
+                    eventTitle = `The ${theme} Unveiled: Innovation Expo`;
+                    eventDescription = `Step into the unknown at The ${theme} Unveiled: Innovation Expo! An exhibition showcasing groundbreaking projects and ideas from ${audience}, with a hint of parallel dimensions.`;
+                    schedule = [
+                        { time: '10:00 AM', activity: 'Exhibition Gates Open (Mind the Vines)', speaker: '' },
+                        { time: '10:30 AM', activity: 'Inauguration & Portal Activation', speaker: 'Chief Guest' },
+                        { time: '11:00 AM', activity: 'Stall Demonstrations & Strange Discoveries', speaker: 'Exhibitors' },
+                        { time: '03:00 PM', activity: 'Interactive Workshops on Interdimensional Travel', speaker: 'Selected Exhibitors' }
+                    ];
+                    posterIdeas = [
+                        `Blueprint style with mysterious glowing components and a sense of discovery.`,
+                        `Vintage scientific illustration style with strange creatures and futuristic tech.`
+                    ];
+                    socialMediaCaption = `🔬 Uncover the secrets at The ${theme} Unveiled: Innovation Expo on ${eventDate}! Witness groundbreaking projects and connect with innovators. Don't miss this revelation!`;
+                    hashtags = `#Exhibition #${theme.replace(/\s/g, '')} #UnveilingTheUnknown #ScienceFiction`;
+                    decorationSuggestions = [
+                        `Dim lighting with spotlights on exhibits.`,
+                        `Glass cases with "specimens" (props) and scientific diagrams.`,
+                        `A sense of a hidden, experimental laboratory.`
+                    ];
+                    break;
+                default:
+                    committees = ['Logistics Committee', 'Publicity Committee', 'Hospitality Committee'];
+                    volunteers = [
+                        { committee: 'Logistics', count: 5 },
+                        { committee: 'Publicity', count: 3 },
+                        { committee: 'Hospitality', count: 3 }
+                    ];
+                    eventTitle = `The Mysterious ${theme} ${eventType}`;
+                    eventDescription = `Join us for a fantastic ${eventType} on "${theme}" for ${audience}. Expect the unexpected!`;
+                    schedule = [
+                        { time: '10:00 AM', activity: 'Opening Remarks (Beware of Echoes)', speaker: 'Organizers' },
+                        { time: '11:00 AM', activity: 'Main Activity (Strange Occurrences)', speaker: '' },
+                        { time: '01:00 PM', activity: 'Break (Waffles & Eggos)', speaker: '' },
+                        { time: '02:00 PM', activity: 'Closing (Until Next Time...)', speaker: '' }
+                    ];
+                    posterIdeas = [
+                        `Dark, shadowy figures with glowing eyes.`,
+                        `Minimalist design with a single, unsettling symbol.`
+                    ];
+                    socialMediaCaption = `Get ready for our mysterious ${eventType} - "${eventTitle}" on ${eventDate}! It's going to be... strange.`;
+                    hashtags = `#UniversityEvent #${eventType.replace(/\s/g, '')} #${theme.replace(/\s/g, '')} #MysteryEvent`;
+                    decorationSuggestions = [
+                        `Subtle red lighting.`,
+                        `Cobwebs and dust (fake, of course!).`,
+                        `A general sense of unease through sound design (not implemented here, but for thought).`
+                    ];
+            }
+
+            // Budget Breakdown (simplified mock)
+            const budget = parseFloat(budgetLimit);
+            budgetBreakdown = [
+                { item: 'Venue Rental (if applicable)', cost: (mode === 'Online' ? 0 : budget * 0.3).toFixed(2) },
+                { item: 'Food & Beverages (Waffles & Eggos)', cost: (budget * 0.25).toFixed(2) },
+                { item: 'Technical Setup (Flickering Lights, Sound)', cost: (budget * 0.2).toFixed(2) },
+                { item: 'Marketing & Publicity (Distorted Posters)', cost: (budget * 0.15).toFixed(2) },
+                { item: 'Miscellaneous / Contingency (Demogorgon Repellent)', cost: (budget * 0.1).toFixed(2) }
+            ];
+
+            // Letter of Permission (template)
+            const letter = `
+[Your Club Name/Logo]
+[Your Club Address]
+[Your Club Contact Number]
+[Your Club Email]
+
+[Date: ${new Date().toLocaleDateString('en-GB')}]
+
+The Dean/Principal,
+[University Name],
+[University Address].
+
+Subject: Urgent Request for Permission to Organize "${eventTitle}"
+
+Dear Sir/Madam,
+
+We, the [Your Club Name] of [University Name], would like to seek your kind permission to organize an event titled "${eventTitle}" on ${eventDate} for a duration of ${duration} day(s). The event will be a ${eventType} with the theme "${theme}", targeting ${audience}.
+
+The mode of the event will be ${mode}. ${mode !== 'Online' ? `The proposed venue for the event is ${venue}. (Please ensure no portals are present.)` : ''}
+
+The estimated budget for this event is approximately INR ${budgetLimit}. We assure you that all necessary arrangements will be made to ensure the smooth and successful execution of the event, adhering to all university guidelines and regulations, and keeping any interdimensional breaches to a minimum.
+
+We believe this event will greatly benefit the students and enhance the university's reputation, perhaps even revealing hidden talents. We are committed to ensuring a well-organized and impactful, albeit slightly unsettling, experience for all participants.
+
+We kindly request your approval and support for this initiative. We are available to discuss the detailed plan and address any concerns you may have at your earliest convenience, especially regarding any strange occurrences.
+
+Thank you for your time and consideration.
+
+Sincerely,
+
+[Your Name/Club President Name]
+[Your Designation/Club President]
+[Your Club Name]
+            `.trim();
+
+
+            return {
+                eventTitle,
+                eventDescription,
+                schedule,
+                posterIdeas,
+                socialMediaCaption,
+                hashtags,
+                committees,
+                volunteers,
+                budgetBreakdown,
+                letter,
+                decorationSuggestions,
+                sportsSeminarNames, // New
+                sportsQuotes // New
+            };
+        }
+
+        // Handle form submission
+        eventForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            // Simple validation: highlight empty required fields
+            let allFieldsValid = true;
+            const requiredInputs = eventForm.querySelectorAll('[required]');
+            requiredInputs.forEach(input => {
+                if (!input.value.trim()) {
+                    input.classList.add('border-red-500', 'ring-2', 'ring-red-200');
+                    allFieldsValid = false;
+                } else {
+                    input.classList.remove('border-red-500', 'ring-2', 'ring-red-200');
+                }
+            });
+
+            if (!allFieldsValid) {
+                showCustomModal("Please fill in all required fields. The Upside Down demands completeness!", "alert");
+                return;
+            }
+
+            // Collect form data
+            const formData = {
+                eventType: document.getElementById('eventType').value,
+                audience: document.getElementById('audience').value,
+                theme: document.getElementById('theme').value,
+                eventDate: document.getElementById('eventDate').value,
+                duration: parseFloat(document.getElementById('duration').value),
+                mode: document.getElementById('mode').value,
+                venue: document.getElementById('venue').value,
+                budgetLimit: parseFloat(document.getElementById('budgetLimit').value)
+            };
+
+            // Show loading spinner and hide form
+            eventForm.classList.add('hidden');
+            loadingSpinner.classList.remove('hidden');
+            planOutput.classList.add('hidden'); // Ensure output is hidden until ready
+
+            try {
+                const plan = await generateEventPlan(formData);
+                currentPlanData = plan; // Store the generated plan globally
+                displayEventPlan(plan);
+            } catch (error) {
+                console.error("Error generating plan:", error);
+                showCustomModal("An anomaly occurred while generating the plan. The Upside Down is interfering! Please try again.", "alert");
+            } finally {
+                loadingSpinner.classList.add('hidden');
+                planOutput.classList.remove('hidden');
+                // Apply fade-in-up animation to all direct children of planOutput
+                Array.from(planOutput.children).forEach(child => {
+                    if (child.classList.contains('fade-in-up')) {
+                        child.style.animation = 'none'; // Reset animation
+                        void child.offsetWidth; // Trigger reflow
+                        child.style.animation = null; // Reapply animation
+                    }
+                });
+            }
+        });
+
+        // Function to display the generated plan
+        function displayEventPlan(plan) {
+            outputTitle.textContent = plan.eventTitle;
+            outputDescription.textContent = plan.eventDescription;
+
+            // Schedule
+            outputSchedule.innerHTML = '';
+            plan.schedule.forEach(item => {
+                const row = document.createElement('tr');
+                row.className = 'border-b border-gray-200 hover:bg-gray-50';
+                row.innerHTML = `
+                    <td class="py-3 px-6 text-left whitespace-nowrap">${item.time}</td>
+                    <td class="py-3 px-6 text-left">${item.activity}</td>
+                    <td class="py-3 px-6 text-left">${item.speaker}</td>
+                `;
+                outputSchedule.appendChild(row);
+            });
+
+            // Poster Ideas
+            outputPosterIdeas.innerHTML = '';
+            plan.posterIdeas.forEach(idea => {
+                const li = document.createElement('li');
+                li.textContent = idea;
+                outputPosterIdeas.appendChild(li);
+            });
+
+            // Social Media
+            outputSocialMedia.textContent = plan.socialMediaCaption;
+            outputHashtags.textContent = plan.hashtags;
+
+            // Committees
+            outputCommittees.innerHTML = '';
+            plan.committees.forEach(committee => {
+                const li = document.createElement('li');
+                li.textContent = committee;
+                outputCommittees.appendChild(li);
+            });
+
+            // Volunteers
+            outputVolunteers.innerHTML = '';
+            plan.volunteers.forEach(vol => {
+                const li = document.createElement('li');
+                li.textContent = `${vol.committee}: ${vol.count} volunteers`;
+                outputVolunteers.appendChild(li);
+            });
+
+            // Budget Breakdown
+            outputBudget.innerHTML = '';
+            plan.budgetBreakdown.forEach(item => {
+                const li = document.createElement('li');
+                li.textContent = `${item.item}: INR ${item.cost}`;
+                outputBudget.appendChild(li);
+            });
+
+            // Letter of Permission
+            outputLetter.textContent = plan.letter;
+
+            // Decoration Suggestions
+            outputDecorations.innerHTML = '';
+            plan.decorationSuggestions.forEach(suggestion => {
+                const li = document.createElement('li');
+                li.textContent = suggestion;
+                outputDecorations.appendChild(li);
+            });
+
+            // Display Sports Seminar Names & Quotes if available
+            if ((plan.eventType === 'Seminar' && (plan.theme.toLowerCase().includes('sport') || plan.theme.toLowerCase().includes('fitness') || plan.theme.toLowerCase().includes('athletic'))) || plan.eventType === 'Sports Event') {
+                sportsContentDiv.classList.remove('hidden');
+                outputSportsNames.innerHTML = '';
+                plan.sportsSeminarNames.forEach(name => {
+                    const li = document.createElement('li');
+                    li.textContent = name;
+                    outputSportsNames.appendChild(li);
+                });
+                outputSportsQuotes.innerHTML = '';
+                plan.sportsQuotes.forEach(quote => {
+                    const li = document.createElement('li');
+                    li.textContent = `"${quote}"`;
+                    outputSportsQuotes.appendChild(li);
+                });
+            } else {
+                sportsContentDiv.classList.add('hidden');
+            }
+        }
+
+        // Download PDF
+        downloadPdfBtn.addEventListener('click', () => {
+            if (!currentPlanData || Object.keys(currentPlanData).length === 0) {
+                showCustomModal("Please generate an event plan first before downloading. The portal is not yet open!", "alert");
+                return;
+            }
+
+            showCustomModal("Summoning PDF from the void...", "alert");
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+
+            // Add Event Plan Summary
+            doc.setFontSize(22);
+            doc.setTextColor(255, 0, 0); // Red for headings
+            doc.text("AI University Event Plan Summary - Upside Down Edition", 105, 20, null, null, "center");
+            doc.setFontSize(12);
+            doc.setTextColor(224, 224, 224); // Lighter text
+            doc.text(`Event Title: ${currentPlanData.eventTitle}`, 10, 35);
+            doc.text(`Description: ${currentPlanData.eventDescription.substring(0, 100)}...`, 10, 45); // Truncate for summary
+            doc.text(`Date: ${document.getElementById('eventDate').value}`, 10, 55);
+            doc.text(`Mode: ${document.getElementById('mode').value}`, 10, 65);
+            doc.text(`Budget: INR ${document.getElementById('budgetLimit').value}`, 10, 75);
+
+            let yOffset = 85; // Starting Y position for new content
+
+            // Add Sports Seminar Names & Quotes if applicable
+            if ((currentPlanData.eventType === 'Seminar' && (currentPlanData.theme.toLowerCase().includes('sport') || currentPlanData.theme.toLowerCase().includes('fitness') || currentPlanData.theme.toLowerCase().includes('athletic'))) || currentPlanData.eventType === 'Sports Event') {
+                doc.addPage();
+                doc.setFontSize(18);
+                doc.setTextColor(255, 0, 0);
+                doc.text("Sports Seminar Name Ideas", 105, 20, null, null, "center");
+                doc.setFontSize(12);
+                doc.setTextColor(224, 224, 224);
+                yOffset = 30;
+                currentPlanData.sportsSeminarNames.forEach(name => {
+                    doc.text(`- ${name}`, 20, yOffset);
+                    yOffset += 10;
+                });
+
+                doc.setFontSize(18);
+                doc.setTextColor(255, 0, 0);
+                doc.text("Motivational Sports Quotes", 105, yOffset + 10, null, null, "center");
+                doc.setFontSize(12);
+                doc.setTextColor(224, 224, 224);
+                yOffset += 20;
+                currentPlanData.sportsQuotes.forEach(quote => {
+                    const splitQuote = doc.splitTextToSize(`"${quote}"`, 170); // Split long quotes
+                    doc.text(splitQuote, 20, yOffset);
+                    yOffset += (splitQuote.length * 10); // Adjust yOffset for multi-line quotes
+                });
+            }
+
+
+            // Add Committees and Volunteers (Checklist)
+            doc.addPage();
+            doc.setFontSize(18);
+            doc.setTextColor(255, 0, 0);
+            doc.text("Required Committees & Volunteers Checklist", 105, 20, null, null, "center");
+            doc.setFontSize(12);
+            doc.setTextColor(224, 224, 224);
+            yPos = 40;
+            currentPlanData.committees.forEach((committee, index) => {
+                const volunteerInfo = currentPlanData.volunteers.find(v => committee.includes(v.committee));
+                doc.text(`- ${committee}: ${volunteerInfo ? `${volunteerInfo.count} volunteers` : 'N/A'}`, 20, yPos);
+                yPos += 10;
+            });
+
+            // Add Budget Breakdown
+            doc.addPage();
+            doc.setFontSize(18);
+            doc.setTextColor(255, 0, 0);
+            doc.text("Budget Breakdown", 105, 20, null, null, "center");
+            doc.setFontSize(12);
+            doc.setTextColor(224, 224, 224);
+            yPos = 40;
+            currentPlanData.budgetBreakdown.forEach(item => {
+                doc.text(`- ${item.item}: INR ${item.cost}`, 20, yPos);
+                yPos += 10;
+            });
+
+            // Add Letter of Permission
+            doc.addPage();
+            doc.setFontSize(18);
+            doc.setTextColor(255, 0, 0);
+            doc.text("Letter of Permission", 105, 20, null, null, "center");
+            doc.setFontSize(12);
+            doc.setTextColor(224, 224, 224);
+            const letterText = currentPlanData.letter;
+            const splitText = doc.splitTextToSize(letterText, 180); // Max width 180mm
+            doc.text(splitText, 15, 30);
+
+            doc.save("Event_Plan_Upside_Down.pdf");
+            showCustomModal("PDF portal opened successfully!", "alert");
+        });
+
+        // Edit Plan
+        editPlanBtn.addEventListener('click', () => {
+            showCustomModal("Do you wish to alter the fabric of reality for this plan?", "confirm", () => {
+                planOutput.classList.add('hidden');
+                eventForm.classList.remove('hidden');
+            });
+        });
+
+        // Start New Plan
+        startNewBtn.addEventListener('click', () => {
+            showCustomModal("Are you sure you want to open a new rift? All current data will be lost to the void.", "confirm", () => {
+                eventForm.reset(); // Clear form fields
+                venueGroup.classList.add('hidden'); // Hide venue field
+                venueInput.removeAttribute('required');
+                planOutput.classList.add('hidden'); // Hide output section
+                eventForm.classList.remove('hidden'); // Show form
+                // Clear any validation highlights
+                eventForm.querySelectorAll('[required]').forEach(input => {
+                    input.classList.remove('border-red-500', 'ring-2', 'ring-red-200');
+                });
+                currentPlanData = {}; // Clear stored plan data
+            });
+        });
+
+        // Initialize date input to today's date
+        document.addEventListener('DOMContentLoaded', () => {
+            const today = new Date();
+            const yyyy = today.getFullYear();
+            const mm = String(today.getMonth() + 1).padStart(2, '0'); // Months start at 0!
+            const dd = String(today.getDate()).padStart(2, '0');
+            document.getElementById('eventDate').value = `${yyyy}-${mm}-${dd}`;
+        });
+    </script>
+</body>
+</html>
