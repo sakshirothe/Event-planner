@@ -1,28 +1,3 @@
-Given the user's request, I will modify the provided HTML and JavaScript code to include staff assignments to committees based on their studies, introduce the new committee types (anchor, volunteer, Saraswati Pujan, photographer, decoration), and restructure the event flow. I will also add more animations to the page.
-
-Here's a plan to achieve the desired outcome:
-
-1.  **Parse Staff Data:** I'll extract staff names and their departments from the provided images (`staff1.jpg` and `staff2.jpg`). Since both images appear to contain the same table, I'll use the information to create a structured dataset of staff.
-2.  **Define Committee Roles and Staff Allocation Logic:**
-      * **Saraswati Pujan Team:** Assign staff from "Administration" or "SOFL" (School of Foreign Languages, assuming they handle cultural aspects).
-      * **Anchor Committee:** Assign staff with "Language Trainer" designation or from "SOFL".
-      * **Photographer Team:** No specific department is listed for photography, so I'll assign staff from departments like "C.S.E." or "AI\&ML" who might have relevant skills, or even "Non-Teaching" staff who handle "Content Writer" or "Graphic Designer" roles.
-      * **Decoration Team:** Assign staff from "Administration" or "Non-Teaching" roles like "HR - Executive" who might oversee event aesthetics.
-      * **Volunteer Committee:** This will be a general pool.
-      * **Existing Committees (Logistics, Publicity, Technical, Hospitality, Sponsorship, Security, Event Management, Stall Management, Mentorship):** Allocate staff based on their department aligning with these committee functions. For example, "C.S.E.", "CS", "AI\&ML", "AIDS" (assuming this is a technical or research department in an AI University context) for technical/logistics, "BBA" and "MBA" for sponsorship/event management, and "Administration" for logistics/security.
-3.  **Modify `generateEventPlan` Function:**
-      * Update the `committees` array to include the new committee types.
-      * Implement the staff allocation logic within this function to assign specific staff members to each committee based on their department/designation and the event type.
-      * Ensure HODs are excluded from these committee assignments.
-      * Adjust the `schedule` generation to include "Saraswati Pujan" as the first event, followed by the main event activities.
-4.  **Update `displayEventPlan` Function:** Ensure the new committee structure and staff assignments are correctly displayed.
-5.  **Add More Animations:**
-      * Implement more `fade-in-up` animations for various sections that are currently static.
-      * Consider adding subtle `pulse-glow` or `glitch-text` to more elements, but sparingly to avoid visual clutter.
-
-Given the constraints, I will provide the updated code with the mentioned changes.
-
-```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
