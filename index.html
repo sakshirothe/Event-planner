@@ -608,16 +608,7 @@
 
         // Staff Data - Updated for clear Professor designation
         const staffData = [
-            { name: "Dr. Vivec Vinayak Wankhede", designation: "CHRO", department: "Administration" },
-            { name: "Dr. Sujith M", designation: "Director-Accreditation & Ranking", department: "Administration" },
-            { name: "Prof. Dhananjay Arun Kumbhar", designation: "Professor", department: "Administration" },
-            { name: "Dr. Ajit Ashok Kulkarni", designation: "HOD", department: "C.S.E" },
-            { name: "Dr. Venkatesan Krishnasamy", designation: "HOD", department: "AI&DS" },
-            { name: "Prof. Chaitali Pradeep Kale", designation: "Professor", department: "AI&DS" },
-            { name: "Dr. Devanand Sunil Joshi", designation: "HOD", department: "AI&DS" },
-            { name: "Dr. Bhatt Sudhanshu Ramesh", designation: "HOD", department: "BBA" },
-            { name: "Dr. K Bharath", designation: "HOD", department: "MBA" },
-            { name: "Dr. Prakash Kulkarni", designation: "Research Professor", department: "Administration" },
+           
             { name: "Prof. Pravin Uttam Chokakkar", designation: "Professor", department: "C.S.E" },
             { name: "Prof. Vijayanjaneya Koti", designation: "Professor", department: "C.S.E" },
             { name: "Prof. Mitesh Pravin Baraiya", designation: "Professor", department: "C.S.E" },
@@ -634,7 +625,6 @@
             { name: "Dr. Prashant Shivraj Dhami", designation: "Professor", department: "CS" },
             { name: "Dr. Muskan Agrawal", designation: "Professor", department: "CS" },
             { name: "Dr. Aparupa Chakraborty", designation: "Professor", department: "AI&DS" },
-            { name: "Prof. Priyamvada Vidan", designation: "Professor", department: "AI&DS" },
             { name: "Dr. Ankur Jain", designation: "Professor", department: "AI&DS" },
             { name: "Dr. Tanay Renu Ghosh", designation: "Professor", department: "AI&DS" },
             { name: "Prof. Dhruvraj Vitthalrao Pathak", designation: "Professor", department: "AI&ML" },
@@ -770,50 +760,59 @@
             const { eventType, audience, theme, eventDate, duration, mode, venue, budgetLimit } = formData;
 
             // Separate professors from other staff
-            const professors = staffData.filter(staff => staff.designation.includes('Professor') || staff.designation.includes('HOD') || staff.designation.includes('Director'));
-            const nonProfessorStaff = staffData.filter(staff => !staff.designation.includes('Professor') && !staff.designation.includes('HOD') && !staff.designation.includes('Director'));
+            let availableProfessors = staffData.filter(staff => staff.designation.includes('Professor') || staff.designation.includes('HOD') || staff.designation.includes('Director'));
+            let nonProfessorStaff = staffData.filter(staff => !staff.designation.includes('Professor') && !staff.designation.includes('HOD') && !staff.designation.includes('Director'));
 
-            // Function to get staff for a committee, prioritizing professors
-            function getCommitteeMembers(targetProfessors, targetVolunteers, departmentKeywords = []) {
-                let selectedProfessors = new Set();
+            // Function to get a unique professor and a specified number of volunteers
+            function assignCommitteeMembers(committeeName, targetVolunteers, departmentKeywords = []) {
+                let assignedProfessor = null;
                 let selectedVolunteers = new Set();
+                let members = [];
 
-                // First, try to get professors matching department keywords
-                const relevantProfessors = professors.filter(p => departmentKeywords.some(keyword => p.department.includes(keyword)));
-                for (let i = 0; i < relevantProfessors.length && selectedProfessors.size < targetProfessors; i++) {
-                    selectedProfessors.add(relevantProfessors[i].name);
-                }
-
-                // If not enough relevant professors, get from general professor pool
-                if (selectedProfessors.size < targetProfessors) {
-                    for (let i = 0; i < professors.length && selectedProfessors.size < targetProfessors; i++) {
-                        selectedProfessors.add(professors[i].name);
+                // Assign one unique professor
+                if (availableProfessors.length > 0) {
+                    // Try to find a relevant professor first
+                    const relevantProfIndex = availableProfessors.findIndex(p => departmentKeywords.some(keyword => p.department.includes(keyword)));
+                    if (relevantProfIndex !== -1) {
+                        assignedProfessor = availableProfessors[relevantProfIndex];
+                        availableProfessors.splice(relevantProfIndex, 1); // Remove assigned professor
+                    } else {
+                        // If no relevant professor, pick any available professor
+                        assignedProfessor = availableProfessors.shift(); // Take the first available professor
+                    }
+                    if (assignedProfessor) {
+                        members.push(`Prof. ${assignedProfessor.name.split(' ').slice(1).join(' ')}`);
                     }
                 }
 
-                // Get volunteers (non-professor staff) matching department keywords
+                // Assign volunteers (non-professor staff)
                 const relevantVolunteers = nonProfessorStaff.filter(s => departmentKeywords.some(keyword => s.department.includes(keyword)));
                 for (let i = 0; i < relevantVolunteers.length && selectedVolunteers.size < targetVolunteers; i++) {
                     selectedVolunteers.add(relevantVolunteers[i].name);
                 }
 
-                // If not enough relevant volunteers, get from general non-professor staff pool
                 if (selectedVolunteers.size < targetVolunteers) {
                     for (let i = 0; i < nonProfessorStaff.length && selectedVolunteers.size < targetVolunteers; i++) {
-                        selectedVolunteers.add(nonProfessorStaff[i].name);
+                        if (!selectedVolunteers.has(nonProfessorStaff[i].name)) { // Ensure unique volunteers
+                             selectedVolunteers.add(nonProfessorStaff[i].name);
+                        }
                     }
                 }
 
-                const members = [];
-                Array.from(selectedProfessors).forEach(name => members.push(`Prof. ${name.split(' ').slice(1).join(' ')}`)); // Format professor names
                 Array.from(selectedVolunteers).forEach(name => members.push(name));
 
-                return members;
+                return {
+                    professor: assignedProfessor ? assignedProfessor.name : 'N/A', // Store full name of assigned professor
+                    profCount: assignedProfessor ? 1 : 0,
+                    volunteers: Array.from(selectedVolunteers),
+                    volunteerCount: Array.from(selectedVolunteers).length,
+                    members: members // For display
+                };
             }
 
 
             let committees = [];
-            let assignedStaff = {}; // Object to hold committee and assigned staff names
+            let assignedCommittees = {}; // Object to hold committee and assigned staff names
             let budgetBreakdown = [];
             let schedule = [];
             let posterIdeas = [];
@@ -826,26 +825,11 @@
             let sportsQuotes = []; // New
 
             // Core Committees with Professor and Volunteer requirements
-            assignedStaff['Saraswati Pujan Team'] = {
-                professors: getCommitteeMembers(1, 0, ['Administration', 'SOFL']),
-                volunteers: getCommitteeMembers(0, 3, ['Administration', 'SOFL'])
-            };
-            assignedStaff['Anchor Committee'] = {
-                professors: getCommitteeMembers(1, 0, ['SOFL', 'Administration']),
-                volunteers: getCommitteeMembers(0, 2, ['SOFL', 'Administration'])
-            };
-            assignedStaff['Photographer Team'] = {
-                professors: getCommitteeMembers(1, 0, ['Non-Teaching', 'C.S.E', 'AI&ML']),
-                volunteers: getCommitteeMembers(0, 2, ['Non-Teaching', 'C.S.E', 'AI&ML'])
-            };
-            assignedStaff['Decoration Team'] = {
-                professors: getCommitteeMembers(1, 0, ['Administration', 'Non-Teaching', 'SOPS']),
-                volunteers: getCommitteeMembers(0, 4, ['Administration', 'Non-Teaching', 'SOPS'])
-            };
-            assignedStaff['Volunteer Committee'] = { // This is for general volunteers, not assigned to specific tasks
-                professors: getCommitteeMembers(1, 0, ['BBA', 'MBA', 'SOPS', 'Administration']),
-                volunteers: getCommitteeMembers(0, 10, ['BBA', 'MBA', 'SOPS', 'Administration'])
-            };
+            assignedCommittees['Saraswati Pujan Team'] = assignCommitteeMembers('Saraswati Pujan Team', 3, ['Administration', 'SOFL']);
+            assignedCommittees['Anchor Committee'] = assignCommitteeMembers('Anchor Committee', 2, ['SOFL', 'Administration']);
+            assignedCommittees['Photographer Team'] = assignCommitteeMembers('Photographer Team', 2, ['Non-Teaching', 'C.S.E', 'AI&ML']);
+            assignedCommittees['Decoration Team'] = assignCommitteeMembers('Decoration Team', 4, ['Administration', 'Non-Teaching', 'SOPS']);
+            assignedCommittees['Volunteer Committee'] = assignCommitteeMembers('Volunteer Committee', 10, ['BBA', 'MBA', 'SOPS', 'Administration']);
 
 
             // Initial Schedule Entry
@@ -857,22 +841,11 @@
                 case 'Seminar':
                 case 'Workshop':
                 case 'Webinar':
-                    assignedStaff['Logistics Committee'] = {
-                        professors: getCommitteeMembers(1, 0, ['Administration', 'SOPS']),
-                        volunteers: getCommitteeMembers(0, 5, ['Administration', 'SOPS'])
-                    };
-                    assignedStaff['Publicity Committee'] = {
-                        professors: getCommitteeMembers(1, 0, ['Administration', 'BBA']),
-                        volunteers: getCommitteeMembers(0, 3, ['Administration', 'BBA'])
-                    };
-                    assignedStaff['Technical Committee'] = {
-                        professors: getCommitteeMembers(1, 0, ['C.S.E', 'AI&ML', 'CS', 'AI&DS']),
-                        volunteers: getCommitteeMembers(0, 4, ['C.S.E', 'AI&ML', 'CS', 'AI&DS'])
-                    };
-                    assignedStaff['Hospitality Committee'] = {
-                        professors: getCommitteeMembers(1, 0, ['Administration', 'SOFL']),
-                        volunteers: getCommitteeMembers(0, 3, ['Administration', 'SOFL'])
-                    };
+                    assignedCommittees['Logistics Committee'] = assignCommitteeMembers('Logistics Committee', 5, ['Administration', 'SOPS']);
+                    assignedCommittees['Publicity Committee'] = assignCommitteeMembers('Publicity Committee', 3, ['Administration', 'BBA']);
+                    assignedCommittees['Technical Committee'] = assignCommitteeMembers('Technical Committee', 4, ['C.S.E', 'AI&ML', 'CS', 'AI&DS']);
+                    assignedCommittees['Hospitality Committee'] = assignCommitteeMembers('Hospitality Committee', 3, ['Administration', 'SOFL']);
+
                     eventTitle = `Future Frontiers: A ${eventType} on ${theme}`;
                     eventDescription = `Explore the cutting-edge of "${theme}" in this insightful ${eventType} designed for ${audience}. Dive deep into new concepts and gain valuable knowledge.`;
                     schedule.push(
@@ -914,30 +887,13 @@
                 case 'Fest':
                 case 'Cultural Event':
                 case 'Sports Event': // Also include Sports Event here
-                    assignedStaff['Logistics Committee'] = {
-                        professors: getCommitteeMembers(1, 0, ['Administration', 'SOPS']),
-                        volunteers: getCommitteeMembers(0, 10, ['Administration', 'SOPS'])
-                    };
-                    assignedStaff['Publicity Committee'] = {
-                        professors: getCommitteeMembers(1, 0, ['Administration', 'BBA']),
-                        volunteers: getCommitteeMembers(0, 7, ['Administration', 'BBA'])
-                    };
-                    assignedStaff['Hospitality Committee'] = {
-                        professors: getCommitteeMembers(1, 0, ['Administration', 'SOFL']),
-                        volunteers: getCommitteeMembers(0, 5, ['Administration', 'SOFL'])
-                    };
-                    assignedStaff['Sponsorship Committee'] = {
-                        professors: getCommitteeMembers(1, 0, ['BBA', 'MBA']),
-                        volunteers: getCommitteeMembers(0, 5, ['BBA', 'MBA'])
-                    };
-                    assignedStaff['Security Committee'] = {
-                        professors: getCommitteeMembers(1, 0, ['Administration', 'PE']),
-                        volunteers: getCommitteeMembers(0, 7, ['Administration', 'PE'])
-                    };
-                    assignedStaff['Event Management Committee'] = {
-                        professors: getCommitteeMembers(1, 0, ['Administration', 'BBA', 'MBA']),
-                        volunteers: getCommitteeMembers(0, 10, ['Administration', 'BBA', 'MBA'])
-                    };
+                    assignedCommittees['Logistics Committee'] = assignCommitteeMembers('Logistics Committee', 10, ['Administration', 'SOPS']);
+                    assignedCommittees['Publicity Committee'] = assignCommitteeMembers('Publicity Committee', 7, ['Administration', 'BBA']);
+                    assignedCommittees['Hospitality Committee'] = assignCommitteeMembers('Hospitality Committee', 5, ['Administration', 'SOFL']);
+                    assignedCommittees['Sponsorship Committee'] = assignCommitteeMembers('Sponsorship Committee', 5, ['BBA', 'MBA']);
+                    assignedCommittees['Security Committee'] = assignCommitteeMembers('Security Committee', 7, ['Administration', 'PE']);
+                    assignedCommittees['Event Management Committee'] = assignCommitteeMembers('Event Management Committee', 10, ['Administration', 'BBA', 'MBA']);
+
                     eventTitle = `Harmonic Convergence: University ${eventType}`;
                     eventDescription = `Experience the vibrant energy of "${eventTitle}"! A grand ${eventType} celebrating "${theme}" for ${audience}, blending cultural richness with cool aesthetics.`;
                     schedule.push(
@@ -975,26 +931,12 @@
                     }
                     break;
                 case 'Hackathon':
-                    assignedStaff['Logistics Committee'] = {
-                        professors: getCommitteeMembers(1, 0, ['Administration', 'SOPS']),
-                        volunteers: getCommitteeMembers(0, 8, ['Administration', 'SOPS'])
-                    };
-                    assignedStaff['Publicity Committee'] = {
-                        professors: getCommitteeMembers(1, 0, ['Administration', 'BBA']),
-                        volunteers: getCommitteeMembers(0, 5, ['Administration', 'BBA'])
-                    };
-                    assignedStaff['Technical Committee'] = {
-                        professors: getCommitteeMembers(1, 0, ['C.S.E', 'AI&ML', 'CS', 'AI&DS']),
-                        volunteers: getCommitteeMembers(0, 10, ['C.S.E', 'AI&ML', 'CS', 'AI&DS'])
-                    };
-                    assignedStaff['Sponsorship Committee'] = {
-                        professors: getCommitteeMembers(1, 0, ['BBA', 'MBA']),
-                        volunteers: getCommitteeMembers(0, 4, ['BBA', 'MBA'])
-                    };
-                    assignedStaff['Mentorship Committee'] = {
-                        professors: getCommitteeMembers(1, 0, ['C.S.E', 'AI&ML', 'CS', 'AI&DS']),
-                        volunteers: getCommitteeMembers(0, 6, ['C.S.E', 'AI&ML', 'CS', 'AI&DS'])
-                    };
+                    assignedCommittees['Logistics Committee'] = assignCommitteeMembers('Logistics Committee', 8, ['Administration', 'SOPS']);
+                    assignedCommittees['Publicity Committee'] = assignCommitteeMembers('Publicity Committee', 5, ['Administration', 'BBA']);
+                    assignedCommittees['Technical Committee'] = assignCommitteeMembers('Technical Committee', 10, ['C.S.E', 'AI&ML', 'CS', 'AI&DS']);
+                    assignedCommittees['Sponsorship Committee'] = assignCommitteeMembers('Sponsorship Committee', 4, ['BBA', 'MBA']);
+                    assignedCommittees['Mentorship Committee'] = assignCommitteeMembers('Mentorship Committee', 6, ['C.S.E', 'AI&ML', 'CS', 'AI&DS']);
+
                     eventTitle = `Code Nexus: ${theme} Hackathon`;
                     eventDescription = `Connect at Code Nexus: ${theme} Hackathon! A challenging coding event for ${audience} to innovate and build solutions around "${theme}".`;
                     schedule.push(
@@ -1016,26 +958,12 @@
                     ];
                     break;
                 case 'Exhibition':
-                    assignedStaff['Logistics Committee'] = {
-                        professors: getCommitteeMembers(1, 0, ['Administration', 'SOPS']),
-                        volunteers: getCommitteeMembers(0, 10, ['Administration', 'SOPS'])
-                    };
-                    assignedStaff['Publicity Committee'] = {
-                        professors: getCommitteeMembers(1, 0, ['Administration', 'BBA']),
-                        volunteers: getCommitteeMembers(0, 7, ['Administration', 'BBA'])
-                    };
-                    assignedStaff['Hospitality Committee'] = {
-                        professors: getCommitteeMembers(1, 0, ['Administration', 'SOFL']),
-                        volunteers: getCommitteeMembers(0, 5, ['Administration', 'SOFL'])
-                    };
-                    assignedStaff['Stall Management Committee'] = {
-                        professors: getCommitteeMembers(1, 0, ['Administration', 'BBA', 'MBA']),
-                        volunteers: getCommitteeMembers(0, 8, ['Administration', 'BBA', 'MBA'])
-                    };
-                    assignedStaff['Security Committee'] = {
-                        professors: getCommitteeMembers(1, 0, ['Administration', 'PE']),
-                        volunteers: getCommitteeMembers(0, 5, ['Administration', 'PE'])
-                    };
+                    assignedCommittees['Logistics Committee'] = assignCommitteeMembers('Logistics Committee', 10, ['Administration', 'SOPS']);
+                    assignedCommittees['Publicity Committee'] = assignCommitteeMembers('Publicity Committee', 7, ['Administration', 'BBA']);
+                    assignedCommittees['Hospitality Committee'] = assignCommitteeMembers('Hospitality Committee', 5, ['Administration', 'SOFL']);
+                    assignedCommittees['Stall Management Committee'] = assignCommitteeMembers('Stall Management Committee', 8, ['Administration', 'BBA', 'MBA']);
+                    assignedCommittees['Security Committee'] = assignCommitteeMembers('Security Committee', 5, ['Administration', 'PE']);
+
                     eventTitle = `Innovation Showcase: The ${theme} Expo`;
                     eventDescription = `Step into the future at Innovation Showcase: The ${theme} Expo! An exhibition presenting groundbreaking projects and ideas from ${audience}, focusing on cool and sustainable innovations.`;
                     schedule.push(
@@ -1057,18 +985,10 @@
                     ];
                     break;
                 default:
-                    assignedStaff['Logistics Committee'] = {
-                        professors: getCommitteeMembers(1, 0, ['Administration', 'SOPS']),
-                        volunteers: getCommitteeMembers(0, 5, ['Administration', 'SOPS'])
-                    };
-                    assignedStaff['Publicity Committee'] = {
-                        professors: getCommitteeMembers(1, 0, ['Administration', 'BBA']),
-                        volunteers: getCommitteeMembers(0, 3, ['Administration', 'BBA'])
-                    };
-                    assignedStaff['Hospitality Committee'] = {
-                        professors: getCommitteeMembers(1, 0, ['Administration', 'SOFL']),
-                        volunteers: getCommitteeMembers(0, 3, ['Administration', 'SOFL'])
-                    };
+                    assignedCommittees['Logistics Committee'] = assignCommitteeMembers('Logistics Committee', 5, ['Administration', 'SOPS']);
+                    assignedCommittees['Publicity Committee'] = assignCommitteeMembers('Publicity Committee', 3, ['Administration', 'BBA']);
+                    assignedCommittees['Hospitality Committee'] = assignCommitteeMembers('Hospitality Committee', 3, ['Administration', 'SOFL']);
+
                     eventTitle = `The ${theme} ${eventType}: University Edition`;
                     eventDescription = `Join us for a fantastic ${eventType} on "${theme}" for ${audience}. Expect an engaging and informative experience!`;
                     schedule.push(
@@ -1144,7 +1064,7 @@ Sincerely,
                 posterIdeas,
                 socialMediaCaption,
                 hashtags,
-                committees: assignedStaff, // Pass assigned staff directly
+                committees: assignedCommittees, // Pass assigned staff directly
                 budgetBreakdown,
                 letter,
                 decorationSuggestions,
@@ -1247,15 +1167,12 @@ Sincerely,
             for (const committeeName in plan.committees) {
                 if (plan.committees.hasOwnProperty(committeeName)) {
                     const li = document.createElement('li');
-                    // Combine professors and volunteers into a single list for display
-                    const allMembers = [...plan.committees[committeeName].professors, ...plan.committees[committeeName].volunteers];
-                    const membersList = allMembers.length > 0
-                        ? `: ${allMembers.join(', ')}`
+                    const committeeData = plan.committees[committeeName];
+                    const membersList = committeeData.members.length > 0
+                        ? `: ${committeeData.members.join(', ')}`
                         : ': (No staff assigned yet)';
-                    const profCount = plan.committees[committeeName].professors.length;
-                    const volunteerCount = plan.committees[committeeName].volunteers.length;
 
-                    li.textContent = `${committeeName}${membersList} (Professors: ${profCount}, Volunteers: ${volunteerCount})`;
+                    li.textContent = `${committeeName}${membersList} (Professors: ${committeeData.profCount}, Volunteers: ${committeeData.volunteerCount})`;
                     outputCommittees.appendChild(li);
                 }
             }
@@ -1362,12 +1279,12 @@ Sincerely,
             let yPos = 40;
             for (const committeeName in currentPlanData.committees) {
                 if (currentPlanData.committees.hasOwnProperty(committeeName)) {
-                    const allMembers = [...currentPlanData.committees[committeeName].professors, ...currentPlanData.committees[committeeName].volunteers];
-                    const membersList = allMembers.length > 0
-                        ? `: ${allMembers.join(', ')}`
+                    const committeeData = currentPlanData.committees[committeeName];
+                    const membersList = committeeData.members.length > 0
+                        ? `: ${committeeData.members.join(', ')}`
                         : ': (No staff assigned yet)';
-                    const profCount = currentPlanData.committees[committeeName].professors.length;
-                    const volunteerCount = currentPlanData.committees[committeeName].volunteers.length;
+                    const profCount = committeeData.profCount;
+                    const volunteerCount = committeeData.volunteerCount;
 
                     const lineText = `- ${committeeName}${membersList} (Professors: ${profCount}, Volunteers: ${volunteerCount})`;
                     const splitText = doc.splitTextToSize(lineText, 170);
