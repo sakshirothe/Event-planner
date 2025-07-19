@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI University Event Planner - Upside Down</title>
+    <title>AI University Event Planner - Cool Tone</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -11,16 +11,16 @@
         /* Custom styles for Inter font and general body */
         body {
             font-family: 'Inter', sans-serif;
-            /* Upside Down Theme: Dark, ominous background with radial glow */
-            background: radial-gradient(circle at center, #2a0a0a 0%, #1a0505 50%, #0a0000 100%);
+            /* Cool Tone Theme: Blue/Green gradient with subtle glow */
+            background: radial-gradient(circle at center, #0a1a2a 0%, #05101a 50%, #000a10 100%);
             color: #e0e0e0; /* Lighter text for dark background */
             min-height: 100vh;
             display: flex;
-            flex-direction: column;
+            flex-flex-direction: column;
             overflow-x: hidden; /* Prevent horizontal scroll from animations */
         }
 
-        /* Glitch Effect for text */
+        /* Glitch Effect for text - Adjusted for cool tones */
         .glitch-text {
             animation: glitch 1.5s infinite;
             position: relative;
@@ -36,17 +36,17 @@
             100% { transform: translate(0); }
         }
 
-        /* Pulsating Glow for elements */
+        /* Pulsating Glow for elements - Adjusted for cool tones */
         .pulse-glow {
             animation: pulseGlow 2s infinite alternate;
         }
 
         @keyframes pulseGlow {
-            0% { box-shadow: 0 0 5px rgba(255, 0, 0, 0.4), 0 0 10px rgba(0, 255, 0, 0.2); }
-            100% { box-shadow: 0 0 15px rgba(255, 0, 0, 0.8), 0 0 25px rgba(0, 255, 0, 0.4); }
+            0% { box-shadow: 0 0 5px rgba(0, 150, 255, 0.4), 0 0 10px rgba(0, 255, 150, 0.2); }
+            100% { box-shadow: 0 0 15px rgba(0, 150, 255, 0.8), 0 0 25px rgba(0, 255, 150, 0.4); }
         }
 
-        /* Custom styling for tooltips */
+        /* Custom styling for tooltips - Adjusted for cool tones */
         .tooltip {
             position: relative;
             display: inline-block;
@@ -56,7 +56,7 @@
         .tooltip .tooltiptext {
             visibility: hidden;
             width: 180px;
-            background-color: #550000; /* Darker, ominous tooltip background */
+            background-color: #002233; /* Darker, cool tooltip background */
             color: #fff;
             text-align: center;
             border-radius: 6px;
@@ -69,7 +69,7 @@
             opacity: 0;
             transition: opacity 0.3s;
             box-shadow: 0 2px 4px rgba(0,0,0,0.4);
-            border: 1px solid #ff0000; /* Red border */
+            border: 1px solid #00aaff; /* Blue border */
         }
 
         .tooltip .tooltiptext::after {
@@ -80,7 +80,7 @@
             margin-left: -5px;
             border-width: 5px;
             border-style: solid;
-            border-color: #550000 transparent transparent transparent;
+            border-color: #002233 transparent transparent transparent;
         }
 
         .tooltip:hover .tooltiptext {
@@ -88,10 +88,10 @@
             opacity: 1;
         }
 
-        /* Loading spinner animation */
+        /* Loading spinner animation - Adjusted for cool tones */
         .spinner {
-            border: 4px solid rgba(255, 0, 0, 0.2);
-            border-left-color: #ff0000; /* Red spinner */
+            border: 4px solid rgba(0, 150, 255, 0.2);
+            border-left-color: #00aaff; /* Blue spinner */
             border-radius: 50%;
             width: 40px;
             height: 40px;
@@ -103,7 +103,7 @@
             100% { transform: rotate(360deg); }
         }
 
-        /* Modal specific styles */
+        /* Modal specific styles - Adjusted for cool tones */
         .modal {
             position: fixed;
             z-index: 1000;
@@ -127,18 +127,18 @@
         }
 
         .modal-content {
-            background-color: #1a0505; /* Dark, eerie modal background */
+            background-color: #05101a; /* Dark, cool modal background */
             color: #e0e0e0;
             margin: auto;
             padding: 30px;
             border-radius: 12px;
-            box-shadow: 0 8px 20px rgba(255, 0, 0, 0.4), 0 0 30px rgba(0, 255, 0, 0.2); /* Red/green glow */
+            box-shadow: 0 8px 20px rgba(0, 150, 255, 0.4), 0 0 30px rgba(0, 255, 150, 0.2); /* Blue/green glow */
             width: 90%;
             max-width: 500px;
             text-align: center;
             transform: scale(0.8); /* Start smaller */
             transition: transform 0.4s ease;
-            border: 2px solid #ff0000; /* Red border */
+            border: 2px solid #00aaff; /* Blue border */
         }
 
         .modal.show .modal-content {
@@ -146,7 +146,7 @@
         }
 
         .close-button {
-            color: #ff0000; /* Red close button */
+            color: #00aaff; /* Blue close button */
             float: right;
             font-size: 32px;
             font-weight: bold;
@@ -155,25 +155,25 @@
 
         .close-button:hover,
         .close-button:focus {
-            color: #ff5555;
+            color: #55ccff;
             text-decoration: none;
             cursor: pointer;
         }
 
-        /* Enhanced button styles */
+        /* Enhanced button styles - Adjusted for cool tones */
         .btn-primary {
-            background: linear-gradient(45deg, #4d0000, #800000); /* Dark red gradient */
+            background: linear-gradient(45deg, #003366, #0055aa); /* Dark blue gradient */
             color: #e0e0e0; /* Lighter text */
             transition: all 0.3s ease;
             position: relative;
             overflow: hidden;
             z-index: 1;
-            border: 1px solid #ff0000; /* Red border */
+            border: 1px solid #00aaff; /* Blue border */
         }
         .btn-primary:hover {
             transform: translateY(-2px) scale(1.02);
-            box-shadow: 0 6px 12px rgba(255, 0, 0, 0.4), 0 0 15px rgba(0, 255, 0, 0.2); /* Red/green glow on hover */
-            background: linear-gradient(45deg, #800000, #4d0000); /* Invert gradient on hover */
+            box-shadow: 0 6px 12px rgba(0, 150, 255, 0.4), 0 0 15px rgba(0, 255, 150, 0.2); /* Blue/green glow on hover */
+            background: linear-gradient(45deg, #0055aa, #003366); /* Invert gradient on hover */
         }
         .btn-primary::before {
             content: '';
@@ -193,15 +193,15 @@
 
         /* Specific styles for action buttons - adjusted for theme */
         #downloadPdfBtn {
-            background: linear-gradient(45deg, #0a3d0a, #006400); /* Dark green gradient */
-            border-color: #00ff00;
+            background: linear-gradient(45deg, #004d40, #00806a); /* Dark teal gradient */
+            border-color: #00ccaa;
         }
         #downloadPdfBtn:hover {
-            background: linear-gradient(45deg, #006400, #0a3d0a);
+            background: linear-gradient(45deg, #00806a, #004d40);
         }
 
         #editPlanBtn {
-            background: linear-gradient(45deg, #4d4d00, #808000); /* Dark yellow/green gradient */
+            background: linear-gradient(45deg, #4d4d00, #808000); /* Dark yellow/green gradient - keeping for contrast */
             border-color: #ffff00;
         }
         #editPlanBtn:hover {
@@ -209,7 +209,7 @@
         }
 
         #startNewBtn {
-            background: linear-gradient(45deg, #660000, #990000); /* Darker red gradient */
+            background: linear-gradient(45deg, #660000, #990000); /* Darker red gradient - keeping for danger/reset contrast */
             border-color: #ff0000;
         }
         #startNewBtn:hover {
@@ -218,34 +218,34 @@
 
         /* Card enhancements - adjusted for theme */
         .card {
-            background-color: rgba(26, 5, 5, 0.8); /* Semi-transparent dark red */
+            background-color: rgba(5, 10, 26, 0.8); /* Semi-transparent dark blue */
             border-radius: 12px;
-            box-shadow: 0 4px 15px rgba(255, 0, 0, 0.2), 0 0 20px rgba(0, 255, 0, 0.1); /* Subtle red/green glow */
+            box-shadow: 0 4px 15px rgba(0, 150, 255, 0.2), 0 0 20px rgba(0, 255, 150, 0.1); /* Subtle blue/green glow */
             padding: 24px;
             transition: transform 0.3s ease, box-shadow 0.3s ease;
-            border: 1px solid #4d0000; /* Dark red border */
+            border: 1px solid #003366; /* Dark blue border */
         }
         .card:hover {
             transform: translateY(-5px);
-            box-shadow: 0 8px 25px rgba(255, 0, 0, 0.4), 0 0 30px rgba(0, 255, 0, 0.2); /* More pronounced glow */
+            box-shadow: 0 8px 25px rgba(0, 150, 255, 0.4), 0 0 30px rgba(0, 255, 150, 0.2); /* More pronounced glow */
         }
 
         /* Input field focus glow - adjusted for theme */
         input:focus, select:focus {
-            border-color: #ff0000; /* Red border on focus */
-            box-shadow: 0 0 0 3px rgba(255, 0, 0, 0.4); /* Red glow */
+            border-color: #00aaff; /* Blue border on focus */
+            box-shadow: 0 0 0 3px rgba(0, 150, 255, 0.4); /* Blue glow */
             outline: none;
         }
 
         /* Header gradient - adjusted for theme */
         header {
-            background: linear-gradient(90deg, #330000, #660000, #990000); /* Darker, more ominous red gradient */
-            border-bottom: 2px solid #ff0000; /* Red border */
+            background: linear-gradient(90deg, #001122, #002244, #003366); /* Darker, more ominous blue gradient */
+            border-bottom: 2px solid #00aaff; /* Blue border */
         }
 
         /* Icon colors */
         .text-blue-500 {
-            color: #00ff00; /* Sickly green for icons */
+            color: #00ccff; /* Bright blue for icons */
         }
         .text-gray-700 {
             color: #c0c0c0; /* Lighter grey for labels */
@@ -263,23 +263,23 @@
             color: #808080; /* Darker grey for tooltips info icon */
         }
         .text-blue-600 {
-            color: #00ff00; /* Sickly green for hashtags */
+            color: #00ccff; /* Bright blue for hashtags */
         }
         .text-sm.font-light {
             color: #e0e0e0; /* Table text */
         }
         .bg-gray-100 {
-            background-color: #330000; /* Darker table header */
+            background-color: #002233; /* Darker table header */
             color: #e0e0e0;
         }
         .border-gray-200 {
-            border-color: #4d0000; /* Darker table borders */
+            border-color: #003366; /* Darker table borders */
         }
         .hover\:bg-gray-50:hover {
-            background-color: #2a0a0a; /* Darker table row hover */
+            background-color: #0a1a2a; /* Darker table row hover */
         }
         .bg-gray-50 {
-            background-color: #1a0505; /* Darker pre background */
+            background-color: #05101a; /* Darker pre background */
         }
 
 
@@ -425,7 +425,7 @@
                     </label>
                     <input type="text" id="venue" name="venue" placeholder="e.g., University Auditorium, City Convention Center"
                            class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 transition duration-200 bg-gray-900 text-white">
-                    <button type="button" id="autofillVenueBtn" class="absolute right-2 top-1/2 -translate-y-1/2 p-2 rounded-full bg-red-700 text-white hover:bg-red-800 focus:outline-none focus:ring-2 focus:ring-red-500 transition duration-200">
+                    <button type="button" id="autofillVenueBtn" class="absolute right-2 top-1/2 -translate-y-1/2 p-2 rounded-full bg-blue-700 text-white hover:bg-blue-800 focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-200">
                         <i class="fas fa-location-crosshairs"></i>
                     </button>
                 </div>
@@ -444,7 +444,7 @@
 
                 <div class="md:col-span-2 flex justify-center mt-6">
                     <button type="submit"
-                            class="btn-primary font-bold py-3 px-8 rounded-full shadow-lg focus:outline-none focus:ring-4 focus:ring-red-300 scale-in">
+                            class="btn-primary font-bold py-3 px-8 rounded-full shadow-lg focus:outline-none focus:ring-4 focus:ring-blue-300 scale-in">
                         <i class="fas fa-magic mr-2"></i>Generate Plan
                     </button>
                 </div>
@@ -606,61 +606,61 @@
         // Global variable to store the generated plan for PDF generation
         let currentPlanData = {};
 
-        // Staff Data from Images
+        // Staff Data - Updated for clear Professor designation
         const staffData = [
             { name: "Dr. Vivec Vinayak Wankhede", designation: "CHRO", department: "Administration" },
             { name: "Dr. Sujith M", designation: "Director-Accreditation & Ranking", department: "Administration" },
-            { name: "Prof. Dhananjay Arun Kumbhar", designation: "Director- Training & Placement", department: "Administration" },
+            { name: "Prof. Dhananjay Arun Kumbhar", designation: "Professor", department: "Administration" },
             { name: "Dr. Ajit Ashok Kulkarni", designation: "HOD", department: "C.S.E" },
             { name: "Dr. Venkatesan Krishnasamy", designation: "HOD", department: "AI&DS" },
-            { name: "Prof. Chaitali Pradeep Kale", designation: "Assistant Professor", department: "AI&DS" },
+            { name: "Prof. Chaitali Pradeep Kale", designation: "Professor", department: "AI&DS" },
             { name: "Dr. Devanand Sunil Joshi", designation: "HOD", department: "AI&DS" },
             { name: "Dr. Bhatt Sudhanshu Ramesh", designation: "HOD", department: "BBA" },
             { name: "Dr. K Bharath", designation: "HOD", department: "MBA" },
             { name: "Dr. Prakash Kulkarni", designation: "Research Professor", department: "Administration" },
-            { name: "Prof. Pravin Uttam Chokakkar", designation: "Assistant Professor", department: "C.S.E" },
-            { name: "Prof. Vijayanjaneya Koti", designation: "Assistant Professor", department: "C.S.E" },
-            { name: "Prof. Mitesh Pravin Baraiya", designation: "Assistant Professor", department: "C.S.E" },
-            { name: "Prof. Gaikwad Aditya Vikas", designation: "Assistant Professor", department: "C.S.E" },
-            { name: "Prof. Kinhago Joshi", designation: "Assistant Professor", department: "C.S.E" },
-            { name: "Dr. Ajaj Singh", designation: "Assistant Professor", department: "C.S.E" },
-            { name: "Prof. Srirang Batra", designation: "Assistant Professor", department: "C.S.E" },
-            { name: "Prof. Devesh Nandan Upadhyay", designation: "Assistant Professor", department: "C.S.E" },
-            { name: "Prof. Vikas Kumar", designation: "Assistant Professor", department: "C.S.E" },
-            { name: "Prof. Raghvendra Singh Kuwar", designation: "Assistant Professor", department: "C.S.E" },
-            { name: "Dr. Nina Ramasahoo Chopde", designation: "Assistant Professor", department: "C.S.E" },
-            { name: "Prof. Utkarsh Nilgal Madanshu", designation: "Assistant Professor", department: "C.S.E" },
-            { name: "Prof. Nachiketa Subodh Salun", designation: "Assistant Professor", department: "CS" },
-            { name: "Dr. Prashant Shivraj Dhami", designation: "Assistant Professor", department: "CS" },
-            { name: "Dr. Muskan Agrawal", designation: "Assistant Professor", department: "CS" },
-            { name: "Dr. Aparupa Chakraborty", designation: "Assistant Professor", department: "AI&DS" },
-            { name: "Prof. Priyamvada Vidan", designation: "Assistant Professor", department: "AI&DS" },
-            { name: "Dr. Ankur Jain", designation: "Assistant Professor", department: "AI&DS" },
-            { name: "Dr. Tanay Renu Ghosh", designation: "Assistant Professor", department: "AI&DS" },
-            { name: "Prof. Dhruvraj Vitthalrao Pathak", designation: "Assistant Professor", department: "AI&ML" },
-            { name: "Prof. Soundharya Goyen", designation: "Assistant Professor", department: "AI&ML" },
-            { name: "Prof. Sonali Lalu", designation: "Assistant Professor", department: "AI&ML" },
-            { name: "Prof. Kajal Hardal Khobragade", designation: "Assistant Professor", department: "AI&ML" },
-            { name: "Prof. Jai Rastogi", designation: "Assistant Professor", department: "AI&ML" },
-            { name: "Prof. Aujwal Shaikh", designation: "Assistant Professor", department: "AI&ML" },
-            { name: "Prof. Nitin Vilasrao Sanjay", designation: "Assistant Professor", department: "BBA" },
-            { name: "Prof. Jadhav Harshada Rajendra", designation: "Assistant Professor", department: "BBA" },
-            { name: "Prof. Devendra Dattatray Kote", designation: "Assistant Professor", department: "BBA" },
-            { name: "Dr. Kulkarni K", designation: "Assistant Professor", department: "BBA" },
-            { name: "Prof. Jayheri Jayraj Bhabu", designation: "Assistant Professor", department: "BBA" },
-            { name: "Dr. Eswaran Karunahakati", designation: "Assistant Professor", department: "MBA" },
-            { name: "Prof. Rajeswari Mahakali", designation: "Assistant Professor", department: "MBA" },
-            { name: "Prof. Nikita Wahi", designation: "Assistant Professor", department: "B.COM" },
-            { name: "Prof. Priya Sahu", designation: "Assistant Professor", department: "B.COM" },
-            { name: "Prof. Shivram Khandelwal", designation: "Assistant Professor", department: "B.COM" },
-            { name: "Prof. Pratik Gohil", designation: "Assistant Professor", department: "B.COM" },
-            { name: "Prof. Paarnal Kotkar", designation: "Assistant Professor", department: "SOPS" },
-            { name: "Dr. Rupanand Gotel", designation: "Assistant Professor", department: "SOPS" },
-            { name: "Dr. Girish Kashid", designation: "Assistant Professor", department: "SOPS" },
-            { name: "Prof. Apurva Bhagwat", designation: "Assistant Professor", department: "SOPS" },
-            { name: "Prof. Tanuja Shivaji Dhotage", designation: "Assistant Professor", department: "SOPS" },
-            { name: "Prof. Ganesh Shivaji Phopase", designation: "Assistant Professor", department: "SOPS" },
-            { name: "Prof. Yogesh Gadhiya", designation: "Assistant Professor", department: "SOFL" },
+            { name: "Prof. Pravin Uttam Chokakkar", designation: "Professor", department: "C.S.E" },
+            { name: "Prof. Vijayanjaneya Koti", designation: "Professor", department: "C.S.E" },
+            { name: "Prof. Mitesh Pravin Baraiya", designation: "Professor", department: "C.S.E" },
+            { name: "Prof. Gaikwad Aditya Vikas", designation: "Professor", department: "C.S.E" },
+            { name: "Prof. Kinhago Joshi", designation: "Professor", department: "C.S.E" },
+            { name: "Dr. Ajaj Singh", designation: "Professor", department: "C.S.E" },
+            { name: "Prof. Srirang Batra", designation: "Professor", department: "C.S.E" },
+            { name: "Prof. Devesh Nandan Upadhyay", designation: "Professor", department: "C.S.E" },
+            { name: "Prof. Vikas Kumar", designation: "Professor", department: "C.S.E" },
+            { name: "Prof. Raghvendra Singh Kuwar", designation: "Professor", department: "C.S.E" },
+            { name: "Dr. Nina Ramasahoo Chopde", designation: "Professor", department: "C.S.E" },
+            { name: "Prof. Utkarsh Nilgal Madanshu", designation: "Professor", department: "C.S.E" },
+            { name: "Prof. Nachiketa Subodh Salun", designation: "Professor", department: "CS" },
+            { name: "Dr. Prashant Shivraj Dhami", designation: "Professor", department: "CS" },
+            { name: "Dr. Muskan Agrawal", designation: "Professor", department: "CS" },
+            { name: "Dr. Aparupa Chakraborty", designation: "Professor", department: "AI&DS" },
+            { name: "Prof. Priyamvada Vidan", designation: "Professor", department: "AI&DS" },
+            { name: "Dr. Ankur Jain", designation: "Professor", department: "AI&DS" },
+            { name: "Dr. Tanay Renu Ghosh", designation: "Professor", department: "AI&DS" },
+            { name: "Prof. Dhruvraj Vitthalrao Pathak", designation: "Professor", department: "AI&ML" },
+            { name: "Prof. Soundharya Goyen", designation: "Professor", department: "AI&ML" },
+            { name: "Prof. Sonali Lalu", designation: "Professor", department: "AI&ML" },
+            { name: "Prof. Kajal Hardal Khobragade", designation: "Professor", department: "AI&ML" },
+            { name: "Prof. Jai Rastogi", designation: "Professor", department: "AI&ML" },
+            { name: "Prof. Aujwal Shaikh", designation: "Professor", department: "AI&ML" },
+            { name: "Prof. Nitin Vilasrao Sanjay", designation: "Professor", department: "BBA" },
+            { name: "Prof. Jadhav Harshada Rajendra", designation: "Professor", department: "BBA" },
+            { name: "Prof. Devendra Dattatray Kote", designation: "Professor", department: "BBA" },
+            { name: "Dr. Kulkarni K", designation: "Professor", department: "BBA" },
+            { name: "Prof. Jayheri Jayraj Bhabu", designation: "Professor", department: "BBA" },
+            { name: "Dr. Eswaran Karunahakati", designation: "Professor", department: "MBA" },
+            { name: "Prof. Rajeswari Mahakali", designation: "Professor", department: "MBA" },
+            { name: "Prof. Nikita Wahi", designation: "Professor", department: "B.COM" },
+            { name: "Prof. Priya Sahu", designation: "Professor", department: "B.COM" },
+            { name: "Prof. Shivram Khandelwal", designation: "Professor", department: "B.COM" },
+            { name: "Prof. Pratik Gohil", designation: "Professor", department: "B.COM" },
+            { name: "Prof. Paarnal Kotkar", designation: "Professor", department: "SOPS" },
+            { name: "Dr. Rupanand Gotel", designation: "Professor", department: "SOPS" },
+            { name: "Dr. Girish Kashid", designation: "Professor", department: "SOPS" },
+            { name: "Prof. Apurva Bhagwat", designation: "Professor", department: "SOPS" },
+            { name: "Prof. Tanuja Shivaji Dhotage", designation: "Professor", department: "SOPS" },
+            { name: "Prof. Ganesh Shivaji Phopase", designation: "Professor", department: "SOPS" },
+            { name: "Prof. Yogesh Gadhiya", designation: "Professor", department: "SOFL" },
             { name: "Prof. Shivani Shashidhar Mistha", designation: "Language Trainer", department: "SOFL" },
             { name: "Prof. Alisha Niranjan Gajbhiye", designation: "Language Trainer", department: "SOFL" },
             { name: "Prof. Gondaliya Sayma Haile", designation: "Language Trainer", department: "SOFL" },
@@ -688,7 +688,7 @@
             if (type === 'alert') {
                 const okButton = document.createElement('button');
                 okButton.textContent = 'OK';
-                okButton.className = 'bg-red-700 text-white px-4 py-2 rounded-md hover:bg-red-800 transition duration-200';
+                okButton.className = 'bg-blue-700 text-white px-4 py-2 rounded-md hover:bg-blue-800 transition duration-200';
                 okButton.onclick = () => customModal.classList.remove('show');
                 modalActions.appendChild(okButton);
             } else if (type === 'confirm') {
@@ -739,13 +739,13 @@
                     (position) => {
                         const lat = position.coords.latitude;
                         const lon = position.coords.longitude;
-                        // Mock data for nearest colleges/venues
+                        // Mock data for nearest colleges/venues (using a cool-tone inspired naming)
                         const mockVenues = [
-                            "Hawkins Community Hall",
-                            "Melvald's General Store Basement",
-                            "Starcourt Mall Food Court",
-                            "Hawkins National Laboratory Annex",
-                            "The Creel House Attic"
+                            "Innovation Hub Auditorium",
+                            "Aqua Tech Lecture Hall",
+                            "Crystal Lake Convention Center",
+                            "Emerald Gardens Amphitheater",
+                            "Blue Sky Research Lab"
                         ];
                         const randomVenue = mockVenues[Math.floor(Math.random() * mockVenues.length)];
                         venueInput.value = randomVenue;
@@ -769,28 +769,46 @@
 
             const { eventType, audience, theme, eventDate, duration, mode, venue, budgetLimit } = formData;
 
-            // Filter out HODs and Directors for committee assignments
-            const availableStaff = staffData.filter(
-                staff => !staff.designation.includes('HOD') && !staff.designation.includes('Director')
-            );
+            // Separate professors from other staff
+            const professors = staffData.filter(staff => staff.designation.includes('Professor') || staff.designation.includes('HOD') || staff.designation.includes('Director'));
+            const nonProfessorStaff = staffData.filter(staff => !staff.designation.includes('Professor') && !staff.designation.includes('HOD') && !staff.designation.includes('Director'));
 
-            // Function to get staff for a committee, ensuring no duplicates and respecting minimums
-            function getStaffForCommittee(departmentKeywords, minCount) {
-                const committeeStaff = new Set();
-                const filteredStaff = availableStaff.filter(staff =>
-                    departmentKeywords.some(keyword => staff.department.includes(keyword))
-                );
+            // Function to get staff for a committee, prioritizing professors
+            function getCommitteeMembers(targetProfessors, targetVolunteers, departmentKeywords = []) {
+                let selectedProfessors = new Set();
+                let selectedVolunteers = new Set();
 
-                for (let i = 0; i < filteredStaff.length && committeeStaff.size < minCount; i++) {
-                    committeeStaff.add(filteredStaff[i].name);
+                // First, try to get professors matching department keywords
+                const relevantProfessors = professors.filter(p => departmentKeywords.some(keyword => p.department.includes(keyword)));
+                for (let i = 0; i < relevantProfessors.length && selectedProfessors.size < targetProfessors; i++) {
+                    selectedProfessors.add(relevantProfessors[i].name);
                 }
-                // If not enough from specific department, pick from general pool
-                if (committeeStaff.size < minCount) {
-                    for (let i = 0; i < availableStaff.length && committeeStaff.size < minCount; i++) {
-                        committeeStaff.add(availableStaff[i].name);
+
+                // If not enough relevant professors, get from general professor pool
+                if (selectedProfessors.size < targetProfessors) {
+                    for (let i = 0; i < professors.length && selectedProfessors.size < targetProfessors; i++) {
+                        selectedProfessors.add(professors[i].name);
                     }
                 }
-                return Array.from(committeeStaff);
+
+                // Get volunteers (non-professor staff) matching department keywords
+                const relevantVolunteers = nonProfessorStaff.filter(s => departmentKeywords.some(keyword => s.department.includes(keyword)));
+                for (let i = 0; i < relevantVolunteers.length && selectedVolunteers.size < targetVolunteers; i++) {
+                    selectedVolunteers.add(relevantVolunteers[i].name);
+                }
+
+                // If not enough relevant volunteers, get from general non-professor staff pool
+                if (selectedVolunteers.size < targetVolunteers) {
+                    for (let i = 0; i < nonProfessorStaff.length && selectedVolunteers.size < targetVolunteers; i++) {
+                        selectedVolunteers.add(nonProfessorStaff[i].name);
+                    }
+                }
+
+                const members = [];
+                Array.from(selectedProfessors).forEach(name => members.push(`Prof. ${name.split(' ').slice(1).join(' ')}`)); // Format professor names
+                Array.from(selectedVolunteers).forEach(name => members.push(name));
+
+                return members;
             }
 
 
@@ -807,15 +825,31 @@
             let sportsSeminarNames = []; // New
             let sportsQuotes = []; // New
 
-            // Core Committees always present
-            assignedStaff['Saraswati Pujan Team'] = getStaffForCommittee(['Administration', 'SOFL'], 3);
-            assignedStaff['Anchor Committee'] = getStaffForCommittee(['SOFL', 'Administration'], 2);
-            assignedStaff['Photographer Team'] = getStaffForCommittee(['Non-Teaching', 'C.S.E', 'AI&ML'], 2);
-            assignedStaff['Decoration Team'] = getStaffForCommittee(['Administration', 'Non-Teaching', 'SOPS'], 4); // SOPS for general support
-            assignedStaff['Volunteer Committee'] = getStaffForCommittee(['BBA', 'MBA', 'SOPS', 'Administration'], 10); // Larger pool for volunteers
+            // Core Committees with Professor and Volunteer requirements
+            assignedStaff['Saraswati Pujan Team'] = {
+                professors: getCommitteeMembers(1, 0, ['Administration', 'SOFL']),
+                volunteers: getCommitteeMembers(0, 3, ['Administration', 'SOFL'])
+            };
+            assignedStaff['Anchor Committee'] = {
+                professors: getCommitteeMembers(1, 0, ['SOFL', 'Administration']),
+                volunteers: getCommitteeMembers(0, 2, ['SOFL', 'Administration'])
+            };
+            assignedStaff['Photographer Team'] = {
+                professors: getCommitteeMembers(1, 0, ['Non-Teaching', 'C.S.E', 'AI&ML']),
+                volunteers: getCommitteeMembers(0, 2, ['Non-Teaching', 'C.S.E', 'AI&ML'])
+            };
+            assignedStaff['Decoration Team'] = {
+                professors: getCommitteeMembers(1, 0, ['Administration', 'Non-Teaching', 'SOPS']),
+                volunteers: getCommitteeMembers(0, 4, ['Administration', 'Non-Teaching', 'SOPS'])
+            };
+            assignedStaff['Volunteer Committee'] = { // This is for general volunteers, not assigned to specific tasks
+                professors: getCommitteeMembers(1, 0, ['BBA', 'MBA', 'SOPS', 'Administration']),
+                volunteers: getCommitteeMembers(0, 10, ['BBA', 'MBA', 'SOPS', 'Administration'])
+            };
+
 
             // Initial Schedule Entry
-            schedule.push({ time: '09:00 AM', activity: 'Saraswati Pujan Ceremony', speaker: 'Saraswati Pujan Team' });
+            schedule.push({ time: '09:00 AM', activity: 'Inaugural Ceremony & Welcome', speaker: 'Saraswati Pujan Team / Event Hosts' });
 
 
             // Determine additional committees and adjust schedule based on event type
@@ -823,28 +857,40 @@
                 case 'Seminar':
                 case 'Workshop':
                 case 'Webinar':
-                    assignedStaff['Logistics Committee'] = getStaffForCommittee(['Administration', 'SOPS'], 5);
-                    assignedStaff['Publicity Committee'] = getStaffForCommittee(['Administration', 'BBA'], 3);
-                    assignedStaff['Technical Committee'] = getStaffForCommittee(['C.S.E', 'AI&ML', 'CS', 'AI&DS'], 4);
-                    assignedStaff['Hospitality Committee'] = getStaffForCommittee(['Administration', 'SOFL'], 3);
-                    eventTitle = `The ${theme} Enigma: A ${eventType} on ${eventDate}`;
-                    eventDescription = `Unravel the mysteries of "${theme}" in this chilling ${eventType} tailored for ${audience}. Dare to delve into the unknown and emerge with new insights.`;
+                    assignedStaff['Logistics Committee'] = {
+                        professors: getCommitteeMembers(1, 0, ['Administration', 'SOPS']),
+                        volunteers: getCommitteeMembers(0, 5, ['Administration', 'SOPS'])
+                    };
+                    assignedStaff['Publicity Committee'] = {
+                        professors: getCommitteeMembers(1, 0, ['Administration', 'BBA']),
+                        volunteers: getCommitteeMembers(0, 3, ['Administration', 'BBA'])
+                    };
+                    assignedStaff['Technical Committee'] = {
+                        professors: getCommitteeMembers(1, 0, ['C.S.E', 'AI&ML', 'CS', 'AI&DS']),
+                        volunteers: getCommitteeMembers(0, 4, ['C.S.E', 'AI&ML', 'CS', 'AI&DS'])
+                    };
+                    assignedStaff['Hospitality Committee'] = {
+                        professors: getCommitteeMembers(1, 0, ['Administration', 'SOFL']),
+                        volunteers: getCommitteeMembers(0, 3, ['Administration', 'SOFL'])
+                    };
+                    eventTitle = `Future Frontiers: A ${eventType} on ${theme}`;
+                    eventDescription = `Explore the cutting-edge of "${theme}" in this insightful ${eventType} designed for ${audience}. Dive deep into new concepts and gain valuable knowledge.`;
                     schedule.push(
-                        { time: '10:00 AM', activity: 'Arrival & Demogorgon Sightings', speaker: 'Event Team' },
-                        { time: '10:30 AM', activity: `Keynote: Decoding the ${theme} Phenomenon`, speaker: 'Dr. Brenner' },
-                        { time: '11:30 AM', activity: 'Mind Flayer Protocol Discussion', speaker: 'Eleven & Co.' },
-                        { time: '01:00 PM', activity: 'Waffle Break & Conspiracy Theories', speaker: '' }
+                        { time: '10:00 AM', activity: 'Registration & Networking', speaker: 'Event Team' },
+                        { time: '10:30 AM', activity: `Keynote Address: Innovations in ${theme}`, speaker: 'Dr. Isabella Chen' },
+                        { time: '11:30 AM', activity: 'Interactive Session: Applying ${theme} Concepts', speaker: 'Expert Panel' },
+                        { time: '01:00 PM', activity: 'Lunch Break & Discussions', speaker: '' }
                     );
                     posterIdeas = [
-                        `Dark silhouette of a monster against a red sky, flickering lights.`,
-                        `Retro 80s style with distressed textures, neon outlines, and subtle Upside Down elements.`
+                        `Sleek, futuristic design with glowing circuit patterns on a deep blue background.`,
+                        `Minimalist design with cool-tone gradients and abstract data visualizations.`
                     ];
-                    socialMediaCaption = `👻 Something strange is happening! Join our "${eventTitle}" ${eventType} on ${eventDate}. Explore "${theme}" and uncover secrets. Register if you dare!`;
-                    hashtags = `#${eventType.replace(/\s/g, '')} #${theme.replace(/\s/g, '')} #UpsideDownEvents #HawkinsMystery`;
+                    socialMediaCaption = `💡 Dive into the future! Join our "${eventTitle}" ${eventType} on ${eventDate}. Discover breakthroughs in "${theme}"! Register now!`;
+                    hashtags = `#${eventType.replace(/\s/g, '')} #${theme.replace(/\s/g, '')} #FutureTech #Innovation`;
                     decorationSuggestions = [
-                        `Flickering string lights, vines hanging from ceilings, dark red/black drapes.`,
-                        `Mossy textures, eerie shadows, and subtle monster silhouettes.`,
-                        `Retro 80s props: old TVs, cassette players, D&D board games.`
+                        `Blue and green LED strip lights, digital projection mapping.`,
+                        `Geometric shapes and reflective surfaces for a modern, techy feel.`,
+                        `Minimalistic stage design with a focus on lighting.`
                     ];
 
                     // Specific for Sports Seminar
@@ -868,30 +914,48 @@
                 case 'Fest':
                 case 'Cultural Event':
                 case 'Sports Event': // Also include Sports Event here
-                    assignedStaff['Logistics Committee'] = getStaffForCommittee(['Administration', 'SOPS'], 10);
-                    assignedStaff['Publicity Committee'] = getStaffForCommittee(['Administration', 'BBA'], 7);
-                    assignedStaff['Hospitality Committee'] = getStaffForCommittee(['Administration', 'SOFL'], 5);
-                    assignedStaff['Sponsorship Committee'] = getStaffForCommittee(['BBA', 'MBA'], 5);
-                    assignedStaff['Security Committee'] = getStaffForCommittee(['Administration', 'PE'], 7);
-                    assignedStaff['Event Management Committee'] = getStaffForCommittee(['Administration', 'BBA', 'MBA'], 10);
-                    eventTitle = `The ${theme} Anomaly: University ${eventType}`;
-                    eventDescription = `Brace yourselves for "${eventTitle}"! A spectacular ${eventType} celebrating "${theme}" for ${audience}, with a mysterious twist. Expect thrilling performances, strange competitions, and otherworldly fun!`;
+                    assignedStaff['Logistics Committee'] = {
+                        professors: getCommitteeMembers(1, 0, ['Administration', 'SOPS']),
+                        volunteers: getCommitteeMembers(0, 10, ['Administration', 'SOPS'])
+                    };
+                    assignedStaff['Publicity Committee'] = {
+                        professors: getCommitteeMembers(1, 0, ['Administration', 'BBA']),
+                        volunteers: getCommitteeMembers(0, 7, ['Administration', 'BBA'])
+                    };
+                    assignedStaff['Hospitality Committee'] = {
+                        professors: getCommitteeMembers(1, 0, ['Administration', 'SOFL']),
+                        volunteers: getCommitteeMembers(0, 5, ['Administration', 'SOFL'])
+                    };
+                    assignedStaff['Sponsorship Committee'] = {
+                        professors: getCommitteeMembers(1, 0, ['BBA', 'MBA']),
+                        volunteers: getCommitteeMembers(0, 5, ['BBA', 'MBA'])
+                    };
+                    assignedStaff['Security Committee'] = {
+                        professors: getCommitteeMembers(1, 0, ['Administration', 'PE']),
+                        volunteers: getCommitteeMembers(0, 7, ['Administration', 'PE'])
+                    };
+                    assignedStaff['Event Management Committee'] = {
+                        professors: getCommitteeMembers(1, 0, ['Administration', 'BBA', 'MBA']),
+                        volunteers: getCommitteeMembers(0, 10, ['Administration', 'BBA', 'MBA'])
+                    };
+                    eventTitle = `Harmonic Convergence: University ${eventType}`;
+                    eventDescription = `Experience the vibrant energy of "${eventTitle}"! A grand ${eventType} celebrating "${theme}" for ${audience}, blending cultural richness with cool aesthetics.`;
                     schedule.push(
-                        { time: '10:00 AM', activity: 'Gates Open & Portal Entry', speaker: '' },
-                        { time: '10:30 AM', activity: 'Inauguration Ceremony by Hawkins Mayor', speaker: 'Mayor Larry Kline' },
-                        { time: '11:00 AM', activity: 'Demogorgon Dodgeball / Cultural Rifts', speaker: 'Various Groups' },
-                        { time: '02:00 PM', activity: 'Scoops Ahoy Ice Cream & Arcade Games', speaker: '' }
+                        { time: '10:00 AM', activity: 'Gates Open & Welcome', speaker: '' },
+                        { time: '10:30 AM', activity: 'Inauguration Ceremony & Cultural Performances', speaker: 'University Dignitaries' },
+                        { time: '11:00 AM', activity: 'Interactive Workshops / Sports Competitions', speaker: 'Various Groups' },
+                        { time: '02:00 PM', activity: 'Food Stalls & Leisure Activities', speaker: '' }
                     );
                     posterIdeas = [
-                        `Distorted town map of Hawkins, with red lightning and shadowy figures.`,
-                        `Retro comic book style, featuring the main characters and a hint of the Upside Down.`
+                        `Dynamic abstract shapes in blue, green, and purple, symbolizing convergence.`,
+                        `Collage of diverse cultural elements or sports imagery with a cool-tone overlay.`
                     ];
-                    socialMediaCaption = `😱 The veil is thinning! "${eventTitle}" is upon us! Join us on ${eventDate} for an unforgettable ${eventType} filled with ${theme} and supernatural vibes. Don't miss out on the adventure!`;
-                    hashtags = `#${eventType.replace(/\s/g, '')} #${theme.replace(/\s/g, '')} #StrangerThingsVibes #HawkinsHigh`;
+                    socialMediaCaption = `🎉 Get ready for "${eventTitle}"! Join us on ${eventDate} for an unforgettable ${eventType} filled with ${theme} and vibrant experiences. Don't miss out!`;
+                    hashtags = `#${eventType.replace(/\s/g, '')} #${theme.replace(/\s/g, '')} #CulturalVibes #SportsFiesta`;
                     decorationSuggestions = [
-                        `Dark, vine-covered archways.`,
-                        `Red and black balloons, pulsating lights.`,
-                        `Replicas of iconic Stranger Things elements: Byers' living room wall, arcade machines.`
+                        `Flowing fabrics in cool colors (blue, silver, white).`,
+                        `Ambient lighting with cool gels and spotlights.`,
+                        `Art installations with geometric patterns or reflective surfaces.`
                     ];
 
                     // Specific for Sports Event
@@ -911,79 +975,118 @@
                     }
                     break;
                 case 'Hackathon':
-                    assignedStaff['Logistics Committee'] = getStaffForCommittee(['Administration', 'SOPS'], 8);
-                    assignedStaff['Publicity Committee'] = getStaffForCommittee(['Administration', 'BBA'], 5);
-                    assignedStaff['Technical Committee'] = getStaffForCommittee(['C.S.E', 'AI&ML', 'CS', 'AI&DS'], 10);
-                    assignedStaff['Sponsorship Committee'] = getStaffForCommittee(['BBA', 'MBA'], 4);
-                    assignedStaff['Mentorship Committee'] = getStaffForCommittee(['C.S.E', 'AI&ML', 'CS', 'AI&DS'], 6);
-                    eventTitle = `Code-Gate: ${theme} Hackathon`;
-                    eventDescription = `Open the gate to innovation at Code-Gate: ${theme} Hackathon! A 24-hour coding challenge for ${audience} to build solutions and hack the Upside Down around "${theme}".`;
+                    assignedStaff['Logistics Committee'] = {
+                        professors: getCommitteeMembers(1, 0, ['Administration', 'SOPS']),
+                        volunteers: getCommitteeMembers(0, 8, ['Administration', 'SOPS'])
+                    };
+                    assignedStaff['Publicity Committee'] = {
+                        professors: getCommitteeMembers(1, 0, ['Administration', 'BBA']),
+                        volunteers: getCommitteeMembers(0, 5, ['Administration', 'BBA'])
+                    };
+                    assignedStaff['Technical Committee'] = {
+                        professors: getCommitteeMembers(1, 0, ['C.S.E', 'AI&ML', 'CS', 'AI&DS']),
+                        volunteers: getCommitteeMembers(0, 10, ['C.S.E', 'AI&ML', 'CS', 'AI&DS'])
+                    };
+                    assignedStaff['Sponsorship Committee'] = {
+                        professors: getCommitteeMembers(1, 0, ['BBA', 'MBA']),
+                        volunteers: getCommitteeMembers(0, 4, ['BBA', 'MBA'])
+                    };
+                    assignedStaff['Mentorship Committee'] = {
+                        professors: getCommitteeMembers(1, 0, ['C.S.E', 'AI&ML', 'CS', 'AI&DS']),
+                        volunteers: getCommitteeMembers(0, 6, ['C.S.E', 'AI&ML', 'CS', 'AI&DS'])
+                    };
+                    eventTitle = `Code Nexus: ${theme} Hackathon`;
+                    eventDescription = `Connect at Code Nexus: ${theme} Hackathon! A challenging coding event for ${audience} to innovate and build solutions around "${theme}".`;
                     schedule.push(
-                        { time: '10:00 AM', activity: 'Opening Ceremony & Problem Statement Glitch', speaker: 'Organizers' },
-                        { time: '11:00 AM', activity: 'Coding Begins! (Beware of Power Surges)', speaker: 'Participants' },
-                        { time: '08:00 PM', activity: 'Demodog Debugging Session', speaker: 'Industry Experts' },
-                        { time: '09:00 AM (Next Day)', activity: 'Project Submissions & Mind Flayer Judging', speaker: '' }
+                        { time: '10:00 AM', activity: 'Opening Ceremony & Problem Statement Reveal', speaker: 'Organizers' },
+                        { time: '11:00 AM', activity: 'Coding Commences!', speaker: 'Participants' },
+                        { time: '08:00 PM', activity: 'Mentor Sessions & Code Review', speaker: 'Industry Experts' },
+                        { time: '09:00 AM (Next Day)', activity: 'Project Submissions & Judging', speaker: '' }
                     );
                     posterIdeas = [
-                        `Digital glitch art with code snippets and a shadowy monster lurking.`,
-                        `Retro computer screen aesthetic with green text, hinting at secret government projects.`
+                        `Abstract geometric patterns resembling circuitry in cool blues and greens.`,
+                        `Minimalist design with lines of code forming an architectural shape.`
                     ];
-                    socialMediaCaption = `👾 Code-Gate is opening! 💻 Join our ${theme} Hackathon on ${eventDate}. Build, innovate, and survive the night! Register your team now!`;
-                    hashtags = `#Hackathon #${theme.replace(/\s/g, '')} #CodeTheUpsideDown #HawkinsLab`;
+                    socialMediaCaption = `💻 Code, create, conquer! 🚀 Join our ${theme} Hackathon on ${eventDate}. Build, innovate, and connect! Register your team now!`;
+                    hashtags = `#Hackathon #${theme.replace(/\s/g, '')} #CodingChallenge #TechInnovation`;
                     decorationSuggestions = [
-                        `Server racks with flickering lights.`,
-                        `Whiteboards covered in complex equations and strange symbols.`,
-                        `Comfortable, slightly eerie coding stations.`
+                        `Blue and white light accents, modern furniture.`,
+                        `Screens displaying live coding sessions or data visualizations.`,
+                        `Comfortable, collaborative workspaces with good lighting.`
                     ];
                     break;
                 case 'Exhibition':
-                    assignedStaff['Logistics Committee'] = getStaffForCommittee(['Administration', 'SOPS'], 10);
-                    assignedStaff['Publicity Committee'] = getStaffForCommittee(['Administration', 'BBA'], 7);
-                    assignedStaff['Hospitality Committee'] = getStaffForCommittee(['Administration', 'SOFL'], 5);
-                    assignedStaff['Stall Management Committee'] = getStaffForCommittee(['Administration', 'BBA', 'MBA'], 8);
-                    assignedStaff['Security Committee'] = getStaffForCommittee(['Administration', 'PE'], 5);
-                    eventTitle = `The ${theme} Unveiled: Innovation Expo`;
-                    eventDescription = `Step into the unknown at The ${theme} Unveiled: Innovation Expo! An exhibition showcasing groundbreaking projects and ideas from ${audience}, with a hint of parallel dimensions.`;
+                    assignedStaff['Logistics Committee'] = {
+                        professors: getCommitteeMembers(1, 0, ['Administration', 'SOPS']),
+                        volunteers: getCommitteeMembers(0, 10, ['Administration', 'SOPS'])
+                    };
+                    assignedStaff['Publicity Committee'] = {
+                        professors: getCommitteeMembers(1, 0, ['Administration', 'BBA']),
+                        volunteers: getCommitteeMembers(0, 7, ['Administration', 'BBA'])
+                    };
+                    assignedStaff['Hospitality Committee'] = {
+                        professors: getCommitteeMembers(1, 0, ['Administration', 'SOFL']),
+                        volunteers: getCommitteeMembers(0, 5, ['Administration', 'SOFL'])
+                    };
+                    assignedStaff['Stall Management Committee'] = {
+                        professors: getCommitteeMembers(1, 0, ['Administration', 'BBA', 'MBA']),
+                        volunteers: getCommitteeMembers(0, 8, ['Administration', 'BBA', 'MBA'])
+                    };
+                    assignedStaff['Security Committee'] = {
+                        professors: getCommitteeMembers(1, 0, ['Administration', 'PE']),
+                        volunteers: getCommitteeMembers(0, 5, ['Administration', 'PE'])
+                    };
+                    eventTitle = `Innovation Showcase: The ${theme} Expo`;
+                    eventDescription = `Step into the future at Innovation Showcase: The ${theme} Expo! An exhibition presenting groundbreaking projects and ideas from ${audience}, focusing on cool and sustainable innovations.`;
                     schedule.push(
-                        { time: '10:00 AM', activity: 'Exhibition Gates Open (Mind the Vines)', speaker: '' },
-                        { time: '10:30 AM', activity: 'Inauguration & Portal Activation', speaker: 'Chief Guest' },
-                        { time: '11:00 AM', activity: 'Stall Demonstrations & Strange Discoveries', speaker: 'Exhibitors' },
-                        { time: '03:00 PM', activity: 'Interactive Workshops on Interdimensional Travel', speaker: 'Selected Exhibitors' }
+                        { time: '10:00 AM', activity: 'Exhibition Gates Open', speaker: '' },
+                        { time: '10:30 AM', activity: 'Inauguration & Ribbon Cutting', speaker: 'Chief Guest' },
+                        { time: '11:00 AM', activity: 'Stall Demonstrations & Interactive Displays', speaker: 'Exhibitors' },
+                        { time: '03:00 PM', activity: 'Panel Discussion on Future Trends', speaker: 'Industry Experts' }
                     );
                     posterIdeas = [
-                        `Blueprint style with mysterious glowing components and a sense of discovery.`,
-                        `Vintage scientific illustration style with strange creatures and futuristic tech.`
+                        `Clean, modern design with product mockups and cool-tone color palettes.`,
+                        `Architectural lines and light effects highlighting key innovations.`
                     ];
-                    socialMediaCaption = `🔬 Uncover the secrets at The ${theme} Unveiled: Innovation Expo on ${eventDate}! Witness groundbreaking projects and connect with innovators. Don't miss this revelation!`;
-                    hashtags = `#Exhibition #${theme.replace(/\s/g, '')} #UnveilingTheUnknown #ScienceFiction`;
+                    socialMediaCaption = `🔬 Discover innovation at The ${theme} Expo on ${eventDate}! Witness groundbreaking projects and connect with brilliant minds. Don't miss this future-forward event!`;
+                    hashtags = `#Exhibition #${theme.replace(/\s/g, '')} #InnovationExpo #FutureTech`;
                     decorationSuggestions = [
-                        `Dim lighting with spotlights on exhibits.`,
-                        `Glass cases with "specimens" (props) and scientific diagrams.`,
-                        `A sense of a hidden, experimental laboratory.`
+                        `Bright, clean lighting with blue/white accents.`,
+                        `Sleek display stands and clear signage.`,
+                        `Interactive exhibits with touchscreens and projection.`
                     ];
                     break;
                 default:
-                    assignedStaff['Logistics Committee'] = getStaffForCommittee(['Administration', 'SOPS'], 5);
-                    assignedStaff['Publicity Committee'] = getStaffForCommittee(['Administration', 'BBA'], 3);
-                    assignedStaff['Hospitality Committee'] = getStaffForCommittee(['Administration', 'SOFL'], 3);
-                    eventTitle = `The Mysterious ${theme} ${eventType}`;
-                    eventDescription = `Join us for a fantastic ${eventType} on "${theme}" for ${audience}. Expect the unexpected!`;
+                    assignedStaff['Logistics Committee'] = {
+                        professors: getCommitteeMembers(1, 0, ['Administration', 'SOPS']),
+                        volunteers: getCommitteeMembers(0, 5, ['Administration', 'SOPS'])
+                    };
+                    assignedStaff['Publicity Committee'] = {
+                        professors: getCommitteeMembers(1, 0, ['Administration', 'BBA']),
+                        volunteers: getCommitteeMembers(0, 3, ['Administration', 'BBA'])
+                    };
+                    assignedStaff['Hospitality Committee'] = {
+                        professors: getCommitteeMembers(1, 0, ['Administration', 'SOFL']),
+                        volunteers: getCommitteeMembers(0, 3, ['Administration', 'SOFL'])
+                    };
+                    eventTitle = `The ${theme} ${eventType}: University Edition`;
+                    eventDescription = `Join us for a fantastic ${eventType} on "${theme}" for ${audience}. Expect an engaging and informative experience!`;
                     schedule.push(
-                        { time: '10:00 AM', activity: 'Opening Remarks (Beware of Echoes)', speaker: 'Organizers' },
-                        { time: '11:00 AM', activity: 'Main Activity (Strange Occurrences)', speaker: '' },
-                        { time: '01:00 PM', activity: 'Break (Waffles & Eggos)', speaker: '' },
-                        { time: '02:00 PM', activity: 'Closing (Until Next Time...)', speaker: '' }
+                        { time: '10:00 AM', activity: 'Opening Remarks', speaker: 'Organizers' },
+                        { time: '11:00 AM', activity: 'Main Activity', speaker: '' },
+                        { time: '01:00 PM', activity: 'Break', speaker: '' },
+                        { time: '02:00 PM', activity: 'Closing Remarks', speaker: '' }
                     );
                     posterIdeas = [
-                        `Dark, shadowy figures with glowing eyes.`,
-                        `Minimalist design with a single, unsettling symbol.`
+                        `Clean, crisp design with cool tones and minimal text.`,
+                        `Abstract patterns reflecting the theme, with a modern feel.`
                     ];
-                    socialMediaCaption = `Get ready for our mysterious ${eventType} - "${eventTitle}" on ${eventDate}! It's going to be... strange.`;
-                    hashtags = `#UniversityEvent #${eventType.replace(/\s/g, '')} #${theme.replace(/\s/g, '')} #MysteryEvent`;
+                    socialMediaCaption = `Get ready for our ${eventType} - "${eventTitle}" on ${eventDate}! It's going to be great.`;
+                    hashtags = `#UniversityEvent #${eventType.replace(/\s/g, '')} #${theme.replace(/\s/g, '')} #CampusLife`;
                     decorationSuggestions = [
-                        `Subtle red lighting.`,
-                        `Cobwebs and dust (fake, of course!).`,
-                        `A general sense of unease through sound design (not implemented here, but for thought).`
+                        `Soft blue and white lighting.`,
+                        `Simple, elegant backdrops.`,
+                        `Comfortable seating arrangements.`
                     ];
             }
 
@@ -991,10 +1094,10 @@
             const budget = parseFloat(budgetLimit);
             budgetBreakdown = [
                 { item: 'Venue Rental (if applicable)', cost: (mode === 'Online' ? 0 : budget * 0.3).toFixed(2) },
-                { item: 'Food & Beverages (Waffles & Eggos)', cost: (budget * 0.25).toFixed(2) },
-                { item: 'Technical Setup (Flickering Lights, Sound)', cost: (budget * 0.2).toFixed(2) },
-                { item: 'Marketing & Publicity (Distorted Posters)', cost: (budget * 0.15).toFixed(2) },
-                { item: 'Miscellaneous / Contingency (Demogorgon Repellent)', cost: (budget * 0.1).toFixed(2) }
+                { item: 'Food & Beverages', cost: (budget * 0.25).toFixed(2) },
+                { item: 'Technical Setup', cost: (budget * 0.2).toFixed(2) },
+                { item: 'Marketing & Publicity', cost: (budget * 0.15).toFixed(2) },
+                { item: 'Miscellaneous / Contingency', cost: (budget * 0.1).toFixed(2) }
             ];
 
             // Letter of Permission (template)
@@ -1010,19 +1113,19 @@ The Dean/Principal,
 [University Name],
 [University Address].
 
-Subject: Urgent Request for Permission to Organize "${eventTitle}"
+Subject: Request for Permission to Organize "${eventTitle}"
 
 Dear Sir/Madam,
 
 We, the [Your Club Name] of [University Name], would like to seek your kind permission to organize an event titled "${eventTitle}" on ${eventDate} for a duration of ${duration} day(s). The event will be a ${eventType} with the theme "${theme}", targeting ${audience}.
 
-The mode of the event will be ${mode}. ${mode !== 'Online' ? `The proposed venue for the event is ${venue}. (Please ensure no portals are present.)` : ''}
+The mode of the event will be ${mode}. ${mode !== 'Online' ? `The proposed venue for the event is ${venue}.` : ''}
 
-The estimated budget for this event is approximately INR ${budgetLimit}. We assure you that all necessary arrangements will be made to ensure the smooth and successful execution of the event, adhering to all university guidelines and regulations, and keeping any interdimensional breaches to a minimum.
+The estimated budget for this event is approximately INR ${budgetLimit}. We assure you that all necessary arrangements will be made to ensure the smooth and successful execution of the event, adhering to all university guidelines and regulations.
 
-We believe this event will greatly benefit the students and enhance the university's reputation, perhaps even revealing hidden talents. We are committed to ensuring a well-organized and impactful, albeit slightly unsettling, experience for all participants.
+We believe this event will greatly benefit the students and enhance the university's reputation. We are committed to ensuring a well-organized and impactful experience for all participants.
 
-We kindly request your approval and support for this initiative. We are available to discuss the detailed plan and address any concerns you may have at your earliest convenience, especially regarding any strange occurrences.
+We kindly request your approval and support for this initiative. We are available to discuss the detailed plan and address any concerns you may have at your earliest convenience.
 
 Thank you for your time and consideration.
 
@@ -1067,7 +1170,7 @@ Sincerely,
             });
 
             if (!allFieldsValid) {
-                showCustomModal("Please fill in all required fields. The Upside Down demands completeness!", "alert");
+                showCustomModal("Please fill in all required fields.", "alert");
                 return;
             }
 
@@ -1094,7 +1197,7 @@ Sincerely,
                 displayEventPlan(plan);
             } catch (error) {
                 console.error("Error generating plan:", error);
-                showCustomModal("An anomaly occurred while generating the plan. The Upside Down is interfering! Please try again.", "alert");
+                showCustomModal("An error occurred while generating the plan. Please try again.", "alert");
             } finally {
                 loadingSpinner.classList.add('hidden');
                 planOutput.classList.remove('hidden');
@@ -1144,10 +1247,15 @@ Sincerely,
             for (const committeeName in plan.committees) {
                 if (plan.committees.hasOwnProperty(committeeName)) {
                     const li = document.createElement('li');
-                    const staffList = plan.committees[committeeName].length > 0
-                        ? `: ${plan.committees[committeeName].join(', ')}`
+                    // Combine professors and volunteers into a single list for display
+                    const allMembers = [...plan.committees[committeeName].professors, ...plan.committees[committeeName].volunteers];
+                    const membersList = allMembers.length > 0
+                        ? `: ${allMembers.join(', ')}`
                         : ': (No staff assigned yet)';
-                    li.textContent = `${committeeName}${staffList}`;
+                    const profCount = plan.committees[committeeName].professors.length;
+                    const volunteerCount = plan.committees[committeeName].volunteers.length;
+
+                    li.textContent = `${committeeName}${membersList} (Professors: ${profCount}, Volunteers: ${volunteerCount})`;
                     outputCommittees.appendChild(li);
                 }
             }
@@ -1194,18 +1302,18 @@ Sincerely,
         // Download PDF
         downloadPdfBtn.addEventListener('click', () => {
             if (!currentPlanData || Object.keys(currentPlanData).length === 0) {
-                showCustomModal("Please generate an event plan first before downloading. The portal is not yet open!", "alert");
+                showCustomModal("Please generate an event plan first before downloading.", "alert");
                 return;
             }
 
-            showCustomModal("Summoning PDF from the void...", "alert");
+            showCustomModal("Generating PDF...", "alert");
             const { jsPDF } = window.jspdf;
             const doc = new jsPDF();
 
             // Add Event Plan Summary
             doc.setFontSize(22);
-            doc.setTextColor(255, 0, 0); // Red for headings
-            doc.text("AI University Event Plan Summary - Upside Down Edition", 105, 20, null, null, "center");
+            doc.setTextColor(0, 100, 200); // Blue for headings
+            doc.text("AI University Event Plan Summary - Cool Tone Edition", 105, 20, null, null, "center");
             doc.setFontSize(12);
             doc.setTextColor(224, 224, 224); // Lighter text
             doc.text(`Event Title: ${currentPlanData.eventTitle}`, 10, 35);
@@ -1220,7 +1328,7 @@ Sincerely,
             if ((currentPlanData.eventType === 'Seminar' && (currentPlanData.theme.toLowerCase().includes('sport') || currentPlanData.theme.toLowerCase().includes('fitness') || currentPlanData.theme.toLowerCase().includes('athletic'))) || currentPlanData.eventType === 'Sports Event') {
                 doc.addPage();
                 doc.setFontSize(18);
-                doc.setTextColor(255, 0, 0);
+                doc.setTextColor(0, 100, 200);
                 doc.text("Sports Seminar Name Ideas", 105, 20, null, null, "center");
                 doc.setFontSize(12);
                 doc.setTextColor(224, 224, 224);
@@ -1231,7 +1339,7 @@ Sincerely,
                 });
 
                 doc.setFontSize(18);
-                doc.setTextColor(255, 0, 0);
+                doc.setTextColor(0, 100, 200);
                 doc.text("Motivational Sports Quotes", 105, yOffset + 10, null, null, "center");
                 doc.setFontSize(12);
                 doc.setTextColor(224, 224, 224);
@@ -1247,18 +1355,24 @@ Sincerely,
             // Add Committees and Assigned Staff Checklist
             doc.addPage();
             doc.setFontSize(18);
-            doc.setTextColor(255, 0, 0);
+            doc.setTextColor(0, 100, 200);
             doc.text("Required Committees & Assigned Staff Checklist", 105, 20, null, null, "center");
             doc.setFontSize(12);
             doc.setTextColor(224, 224, 224);
             let yPos = 40;
             for (const committeeName in currentPlanData.committees) {
                 if (currentPlanData.committees.hasOwnProperty(committeeName)) {
-                    const staffList = currentPlanData.committees[committeeName].length > 0
-                        ? `: ${currentPlanData.committees[committeeName].join(', ')}`
+                    const allMembers = [...currentPlanData.committees[committeeName].professors, ...currentPlanData.committees[committeeName].volunteers];
+                    const membersList = allMembers.length > 0
+                        ? `: ${allMembers.join(', ')}`
                         : ': (No staff assigned yet)';
-                    doc.text(`- ${committeeName}${staffList}`, 20, yPos);
-                    yPos += 10;
+                    const profCount = currentPlanData.committees[committeeName].professors.length;
+                    const volunteerCount = currentPlanData.committees[committeeName].volunteers.length;
+
+                    const lineText = `- ${committeeName}${membersList} (Professors: ${profCount}, Volunteers: ${volunteerCount})`;
+                    const splitText = doc.splitTextToSize(lineText, 170);
+                    doc.text(splitText, 20, yPos);
+                    yPos += (splitText.length * 10); // Adjust yPos for multi-line entries
                     if (yPos > 280) { // Check for page overflow
                         doc.addPage();
                         yPos = 20;
@@ -1269,7 +1383,7 @@ Sincerely,
             // Add Budget Breakdown
             doc.addPage();
             doc.setFontSize(18);
-            doc.setTextColor(255, 0, 0);
+            doc.setTextColor(0, 100, 200);
             doc.text("Budget Breakdown", 105, 20, null, null, "center");
             doc.setFontSize(12);
             doc.setTextColor(224, 224, 224);
@@ -1282,7 +1396,7 @@ Sincerely,
             // Add Letter of Permission
             doc.addPage();
             doc.setFontSize(18);
-            doc.setTextColor(255, 0, 0);
+            doc.setTextColor(0, 100, 200);
             doc.text("Letter of Permission", 105, 20, null, null, "center");
             doc.setFontSize(12);
             doc.setTextColor(224, 224, 224);
@@ -1290,13 +1404,13 @@ Sincerely,
             const splitText = doc.splitTextToSize(letterText, 180); // Max width 180mm
             doc.text(splitText, 15, 30);
 
-            doc.save("Event_Plan_Upside_Down.pdf");
-            showCustomModal("PDF portal opened successfully!", "alert");
+            doc.save("Event_Plan_Cool_Tone.pdf");
+            showCustomModal("PDF generated successfully!", "alert");
         });
 
         // Edit Plan
         editPlanBtn.addEventListener('click', () => {
-            showCustomModal("Do you wish to alter the fabric of reality for this plan?", "confirm", () => {
+            showCustomModal("Do you want to edit the current plan?", "confirm", () => {
                 planOutput.classList.add('hidden');
                 eventForm.classList.remove('hidden');
             });
@@ -1304,7 +1418,7 @@ Sincerely,
 
         // Start New Plan
         startNewBtn.addEventListener('click', () => {
-            showCustomModal("Are you sure you want to open a new rift? All current data will be lost to the void.", "confirm", () => {
+            showCustomModal("Are you sure you want to start a new plan? All current data will be lost.", "confirm", () => {
                 eventForm.reset(); // Clear form fields
                 venueGroup.classList.add('hidden'); // Hide venue field
                 venueInput.removeAttribute('required');
@@ -1330,4 +1444,3 @@ Sincerely,
     </script>
 </body>
 </html>
-```
