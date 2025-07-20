@@ -7,6 +7,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <style>
         /* Custom styles for Inter font and general body */
         body {
@@ -16,7 +17,7 @@
             color: #e0e0e0; /* Lighter text for dark background */
             min-height: 100vh;
             display: flex;
-            flex-flex-direction: column;
+            flex-direction: column; /* Corrected typo */
             overflow-x: hidden; /* Prevent horizontal scroll from animations */
         }
 
@@ -231,7 +232,7 @@
         }
 
         /* Input field focus glow - adjusted for theme */
-        input:focus, select:focus {
+        input:focus, select:focus, textarea:focus {
             border-color: #00aaff; /* Blue border on focus */
             box-shadow: 0 0 0 3px rgba(0, 150, 255, 0.4); /* Blue glow */
             outline: none;
@@ -442,6 +443,19 @@
                            class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 transition duration-200 bg-gray-900 text-white">
                 </div>
 
+                <div class="relative md:col-span-2">
+                    <label for="customCommittees" class="block text-sm font-semibold mb-2">
+                        <i class="fas fa-users mr-2"></i>Custom Committees (Optional)
+                        <span class="tooltip text-xs ml-1">
+                            <i class="fas fa-info-circle"></i>
+                            <span class="tooltiptext">Enter comma-separated custom committee names. Example: "Volunteer Recruitment, Sponsor Relations"</span>
+                        </span>
+                    </label>
+                    <input type="text" id="customCommittees" name="customCommittees" placeholder="e.g., Volunteer Recruitment, Sponsor Relations"
+                           class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 transition duration-200 bg-gray-900 text-white">
+                </div>
+
+
                 <div class="md:col-span-2 flex justify-center mt-6">
                     <button type="submit"
                             class="btn-primary font-bold py-3 px-8 rounded-full shadow-lg focus:outline-none focus:ring-4 focus:ring-blue-300 scale-in">
@@ -471,20 +485,36 @@
                 </div>
             </div>
 
-            <div id="sportsContent" class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8 hidden">
+            <div id="resourceContent" class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
                 <div class="card slide-in-left" style="animation-delay: 0.3s;">
-                    <h3 class="text-2xl font-bold mb-4 flex items-center"><i class="fas fa-trophy mr-3"></i>Sports Seminar Name Ideas</h3>
-                    <ul id="outputSportsNames" class="list-disc list-inside space-y-2">
-                        </ul>
+                    <h3 class="text-2xl font-bold mb-4 flex items-center"><i class="fas fa-door-open mr-3"></i>Suggested Venues/Rooms</h3>
+                    <ul id="outputRooms" class="list-disc list-inside space-y-2"></ul>
                 </div>
                 <div class="card slide-in-right" style="animation-delay: 0.4s;">
-                    <h3 class="text-2xl font-bold mb-4 flex items-center"><i class="fas fa-quote-left mr-3"></i>Motivational Sports Quotes</h3>
-                    <ul id="outputSportsQuotes" class="list-disc list-inside space-y-2">
-                        </ul>
+                    <h3 class="text-2xl font-bold mb-4 flex items-center"><i class="fas fa-video mr-3"></i>Suggested Equipment</h3>
+                    <ul id="outputEquipment" class="list-disc list-inside space-y-2"></ul>
                 </div>
             </div>
 
-            <div class="card mb-8 fade-in-up" style="animation-delay: 0.5s;">
+            <div id="speakerContent" class="grid grid-cols-1 gap-6 mb-8">
+                <div class="card fade-in-up" style="animation-delay: 0.5s;">
+                    <h3 class="text-2xl font-bold mb-4 flex items-center"><i class="fas fa-microphone-alt mr-3"></i>Suggested Speakers/Guests</h3>
+                    <ul id="outputSpeakers" class="list-disc list-inside space-y-2"></ul>
+                </div>
+            </div>
+
+            <div id="sportsContent" class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8 hidden">
+                <div class="card slide-in-left" style="animation-delay: 0.6s;">
+                    <h3 class="text-2xl font-bold mb-4 flex items-center"><i class="fas fa-trophy mr-3"></i>Sports Seminar Name Ideas</h3>
+                    <ul id="outputSportsNames" class="list-disc list-inside space-y-2"></ul>
+                </div>
+                <div class="card slide-in-right" style="animation-delay: 0.7s;">
+                    <h3 class="text-2xl font-bold mb-4 flex items-center"><i class="fas fa-quote-left mr-3"></i>Motivational Sports Quotes</h3>
+                    <ul id="outputSportsQuotes" class="list-disc list-inside space-y-2"></ul>
+                </div>
+            </div>
+
+            <div class="card mb-8 fade-in-up" style="animation-delay: 0.8s;">
                 <h3 class="text-2xl font-bold mb-4 flex items-center"><i class="fas fa-clipboard-list mr-3"></i>Sample Schedule</h3>
                 <div class="overflow-x-auto">
                     <table class="min-w-full border rounded-lg">
@@ -502,55 +532,68 @@
             </div>
 
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-                <div class="card slide-in-left" style="animation-delay: 0.6s;">
+                <div class="card slide-in-left" style="animation-delay: 0.9s;">
                     <h3 class="text-2xl font-bold mb-4 flex items-center"><i class="fas fa-paint-brush mr-3"></i>Poster Design Ideas</h3>
-                    <ul id="outputPosterIdeas" class="list-disc list-inside space-y-2">
-                        </ul>
+                    <ul id="outputPosterIdeas" class="list-disc list-inside space-y-2"></ul>
                 </div>
-                <div class="card slide-in-right" style="animation-delay: 0.7s;">
-                    <h3 class="text-2xl font-bold mb-4 flex items-center"><i class="fas fa-share-alt mr-3"></i>Social Media Caption & Hashtags</h3>
-                    <p id="outputSocialMedia" class="leading-relaxed"></p>
-                    <p id="outputHashtags" class="font-medium mt-2"></p>
+                <div class="card slide-in-right" style="animation-delay: 1.0s;">
+                    <h3 class="text-2xl font-bold mb-4 flex items-center"><i class="fas fa-share-alt mr-3"></i>Social Media & Marketing Content</h3>
+                    <h4 class="font-semibold mt-2 text-gray-700">Caption:</h4>
+                    <p id="outputSocialMedia" class="leading-relaxed mb-2"></p>
+                    <h4 class="font-semibold text-gray-700">Hashtags:</h4>
+                    <p id="outputHashtags" class="font-medium mb-2"></p>
+                    <h4 class="font-semibold text-gray-700">Email Draft:</h4>
+                    <pre id="outputEmailDraft" class="p-3 rounded-lg text-sm whitespace-pre-wrap font-mono leading-relaxed border bg-gray-50 mb-2"></pre>
+                    <h4 class="font-semibold text-gray-700">Press Release Snippet:</h4>
+                    <pre id="outputPressRelease" class="p-3 rounded-lg text-sm whitespace-pre-wrap font-mono leading-relaxed border bg-gray-50"></pre>
                 </div>
             </div>
 
             <div class="grid grid-cols-1 gap-6 mb-8">
-                <div class="card fade-in-up" style="animation-delay: 0.8s;">
+                <div class="card fade-in-up" style="animation-delay: 1.1s;">
                     <h3 class="text-2xl font-bold mb-4 flex items-center"><i class="fas fa-users-cog mr-3"></i>Required Committees & Assigned Staff</h3>
-                    <ul id="outputCommittees" class="list-disc list-inside space-y-2">
-                        </ul>
+                    <ul id="outputCommittees" class="list-disc list-inside space-y-2"></ul>
                 </div>
             </div>
 
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-                <div class="card slide-in-left" style="animation-delay: 1.0s;">
+                <div class="card slide-in-left" style="animation-delay: 1.2s;">
                     <h3 class="text-2xl font-bold mb-4 flex items-center"><i class="fas fa-chart-pie mr-3"></i>Budget Breakdown</h3>
-                    <ul id="outputBudget" class="list-disc list-inside space-y-2">
-                        </ul>
+                    <ul id="outputBudget" class="list-disc list-inside space-y-2"></ul>
                 </div>
-                <div class="card slide-in-right" style="animation-delay: 1.1s;">
+                <div class="card slide-in-right" style="animation-delay: 1.3s;">
                     <h3 class="text-2xl font-bold mb-4 flex items-center"><i class="fas fa-lightbulb mr-3"></i>Decoration Suggestions</h3>
-                    <ul id="outputDecorations" class="list-disc list-inside space-y-2">
-                        </ul>
+                    <ul id="outputDecorations" class="list-disc list-inside space-y-2"></ul>
                 </div>
             </div>
 
-            <div class="card mb-8 fade-in-up" style="animation-delay: 1.2s;">
-                <h3 class="text-2xl font-bold mb-4 flex items-center"><i class="fas fa-envelope-open-text mr-3"></i>Letter of Permission</h3>
-                <pre id="outputLetter" class="p-4 rounded-lg text-sm whitespace-pre-wrap font-mono leading-relaxed border"></pre>
+            <div class="card mb-8 fade-in-up" style="animation-delay: 1.4s;">
+                <h3 class="text-2xl font-bold mb-4 flex items-center"><i class="fas fa-tasks mr-3"></i>Event Planning Checklist</h3>
+                <ul id="outputChecklist" class="list-disc list-inside space-y-2"></ul>
             </div>
 
-            <div class="flex flex-col sm:flex-row justify-center gap-4 mt-8 fade-in-up" style="animation-delay: 1.3s;">
+            <div class="card mb-8 fade-in-up" style="animation-delay: 1.5s;">
+                <h3 class="text-2xl font-bold mb-4 flex items-center"><i class="fas fa-exclamation-triangle mr-3"></i>Contingency Planning</h3>
+                <p id="outputContingency" class="leading-relaxed"></p>
+            </div>
+
+            <div class="card mb-8 fade-in-up" style="animation-delay: 1.6s;">
+                <h3 class="text-2xl font-bold mb-4 flex items-center"><i class="fas fa-envelope-open-text mr-3"></i>Letter of Permission</h3>
+                <pre id="outputLetter" class="p-4 rounded-lg text-sm whitespace-pre-wrap font-mono leading-relaxed border bg-gray-50"></pre>
+            </div>
+
+
+            <div class="flex flex-col sm:flex-row justify-center gap-4 mt-8 fade-in-up" style="animation-delay: 1.7s;">
                 <button id="downloadPdfBtn"
-                        class="btn-primary font-bold py-3 px-6 rounded-full shadow-lg focus:outline-none focus:ring-4 focus:ring-green-300 scale-in" style="animation-delay: 1.4s;">
-                    <i class="fas fa-download mr-2"></i>Download Checklist & Letter (PDF)
+                        class="btn-primary font-bold py-3 px-6 rounded-full shadow-lg focus:outline-none focus:ring-4 focus:ring-green-300 scale-in" style="animation-delay: 1.8s;">
+                    <i class="fas fa-download mr-2"></i>Download Full Plan (PDF)
                 </button>
                 <button id="editPlanBtn"
-                        class="btn-primary font-bold py-3 px-6 rounded-full shadow-lg focus:outline-none focus:ring-4 focus:ring-yellow-300 scale-in" style="animation-delay: 1.5s;">
+                        class="btn-primary font-bold py-3 px-6 rounded-full shadow-lg focus:outline-none focus:ring-4 focus:ring-yellow-300 scale-in" style="animation-delay: 1.9s;">
                     <i class="fas fa-edit mr-2"></i>Edit Plan
                 </button>
                 <button id="startNewBtn"
-                        class="btn-primary font-bold py-3 px-6 rounded-full shadow-lg focus:outline-none focus:ring-4 focus:ring-red-300 scale-in" style="animation-delay: 1.6s;">
+                        class="btn-primary font-bold py-3 px-6 rounded-full shadow-lg focus:outline-none focus:ring-4 focus:ring-red-300 scale-in" style="animation-delay: 2.0s;">
                     <i class="fas fa-plus mr-2"></i>Start New
                 </button>
             </div>
@@ -575,6 +618,8 @@
         const autofillVenueBtn = document.getElementById('autofillVenueBtn');
         const loadingSpinner = document.getElementById('loadingSpinner');
         const planOutput = document.getElementById('planOutput');
+        const customCommitteesInput = document.getElementById('customCommittees');
+
 
         const outputTitle = document.getElementById('outputTitle');
         const outputDescription = document.getElementById('outputDescription');
@@ -586,11 +631,22 @@
         const outputBudget = document.getElementById('outputBudget');
         const outputLetter = document.getElementById('outputLetter');
         const outputDecorations = document.getElementById('outputDecorations');
+        const outputChecklist = document.getElementById('outputChecklist');
+        const outputContingency = document.getElementById('outputContingency');
+        const outputEmailDraft = document.getElementById('outputEmailDraft');
+        const outputPressRelease = document.getElementById('outputPressRelease');
 
         // New elements for sports suggestions
         const sportsContentDiv = document.getElementById('sportsContent');
         const outputSportsNames = document.getElementById('outputSportsNames');
         const outputSportsQuotes = document.getElementById('outputSportsQuotes');
+
+        // New elements for resources and speakers
+        const resourceContentDiv = document.getElementById('resourceContent');
+        const outputRooms = document.getElementById('outputRooms');
+        const outputEquipment = document.getElementById('outputEquipment');
+        const speakerContentDiv = document.getElementById('speakerContent');
+        const outputSpeakers = document.getElementById('outputSpeakers');
 
 
         const downloadPdfBtn = document.getElementById('downloadPdfBtn');
@@ -606,40 +662,88 @@
         // Global variable to store the generated plan for PDF generation
         let currentPlanData = {};
 
-        // Staff Data - Updated for clear Professor designation
+        // Staff Data - Updated with skills and maxAssignments
         const staffData = [
-           
-            { name: "Prof. Pravin Uttam Chokakkar", designation: "Professor", department: "C.S.E" },
-            { name: "Prof. Gaikwad Aditya Vikas", designation: "Professor", department: "C.S.E" },
-            { name: "Prof. Kinhago Joshi", designation: "Professor", department: "C.S.E" },
-            { name: "Dr. Ajaj Singh", designation: "Professor", department: "C.S.E" },
-            { name: "Prof. Srirang Batra", designation: "Professor", department: "C.S.E" },
-            { name: "Prof. Devesh Nandan Upadhyay", designation: "Professor", department: "C.S.E" },
-            { name: "Prof. Vikas Kumar", designation: "Professor", department: "C.S.E" },
-            { name: "Prof. Raghvendra Singh Kuwar", designation: "Professor", department: "C.S.E" },
-            { name: "Dr. Nina Ramasahoo Chopde", designation: "Professor", department: "C.S.E" },
-            { name: "Prof. Utkarsh Nilgal Madanshu", designation: "Professor", department: "C.S.E" },
-            { name: "Prof. Nachiketa Subodh Salun", designation: "Professor", department: "CS" },
-            { name: "Dr. Prashant Shivraj Dhami", designation: "Professor", department: "CS" },
-            { name: "Dr. Muskan Agrawal", designation: "Professor", department: "CS" },
-            { name: "Dr. Aparupa Chakraborty", designation: "Professor", department: "AI&DS" },
-            { name: "Dr. Ankur Jain", designation: "Professor", department: "AI&DS" },
-            { name: "Dr. Tanay Renu Ghosh", designation: "Professor", department: "AI&DS" },
-            { name: "Prof. Dhruvraj Vitthalrao Pathak", designation: "Professor", department: "AI&ML" },
-            { name: "Prof. Soundharya Goyen", designation: "Professor", department: "AI&ML" },
-            { name: "Prof. Sonali Lalu", designation: "Professor", department: "AI&ML" },
-            { name: "Prof. Kajal Hardal Khobragade", designation: "Professor", department: "AI&ML" },
-            { name: "Prof. Jai Rastogi", designation: "Professor", department: "AI&ML" },
-            { name: "Prof. Aujwal Shaikh", designation: "Professor", department: "AI&ML" },
-            { name: "Prof. Nitin Vilasrao Sanjay", designation: "Professor", department: "BBA" },
-            { name: "Prof. Jadhav Harshada Rajendra", designation: "Professor", department: "BBA" },
-            { name: "Prof. Devendra Dattatray Kote", designation: "Professor", department: "BBA" },
-            { name: "Dr. Kulkarni K", designation: "Professor", department: "BBA" },
-            { name: "Prof. Jayheri Jayraj Bhabu", designation: "Professor", department: "BBA" },
-            { name: "Dr. Eswaran Karunahakati", designation: "Professor", department: "MBA" },
-            { name: "Prof. Rajeswari Mahakali", designation: "Professor", department: "MBA" },
-            { name: "Prof. Nikita Wahi", designation: "Professor", department: "B.COM" },
+            { name: "Prof. Pravin Uttam Chokakkar", designation: "Professor", department: "C.S.E", skills: ["AI", "Machine Learning", "Data Science", "Research"], maxAssignments: 2 },
+            { name: "Prof. Gaikwad Aditya Vikas", designation: "Professor", department: "C.S.E", skills: ["Web Development", "Database Management", "Project Management"], maxAssignments: 3 },
+            { name: "Prof. Kinhago Joshi", designation: "Professor", department: "C.S.E", skills: ["Cybersecurity", "Networking", "Event Logistics"], maxAssignments: 2 },
+            { name: "Dr. Ajaj Singh", designation: "Professor", department: "C.S.E", skills: ["Cloud Computing", "Software Engineering", "Public Speaking"], maxAssignments: 2 },
+            { name: "Prof. Srirang Batra", designation: "Professor", department: "C.S.E", skills: ["Algorithms", "Data Structures", "Academic Coordination"], maxAssignments: 3 },
+            { name: "Prof. Devesh Nandan Upadhyay", designation: "Professor", department: "C.S.E", skills: ["DevOps", "System Administration", "Technical Support"], maxAssignments: 2 },
+            { name: "Prof. Vikas Kumar", designation: "Professor", department: "C.S.E", skills: ["Mobile Development", "UI/UX Design", "Student Mentoring"], maxAssignments: 3 },
+            { name: "Prof. Raghvendra Singh Kuwar", designation: "Professor", department: "C.S.E", skills: ["Computer Graphics", "Game Development", "Creative Design"], maxAssignments: 2 },
+            { name: "Dr. Nina Ramasahoo Chopde", designation: "Professor", department: "C.S.E", skills: ["Natural Language Processing", "Robotics", "Research"], maxAssignments: 2 },
+            { name: "Prof. Utkarsh Nilgal Madanshu", designation: "Professor", department: "C.S.E", skills: ["Big Data Analytics", "Distributed Systems", "Logistics"], maxAssignments: 3 },
+            { name: "Prof. Nachiketa Subodh Salun", designation: "Professor", department: "CS", skills: ["Operating Systems", "Computer Architecture", "IT Infrastructure"], maxAssignments: 2 },
+            { name: "Dr. Prashant Shivraj Dhami", designation: "Professor", department: "CS", skills: ["Theory of Computation", "Compiler Design", "Curriculum Development"], maxAssignments: 2 },
+            { name: "Dr. Muskan Agrawal", designation: "Professor", department: "CS", skills: ["Image Processing", "Computer Vision", "Photography"], maxAssignments: 2 },
+            { name: "Dr. Aparupa Chakraborty", designation: "Professor", department: "AI&DS", skills: ["Deep Learning", "Data Visualization", "Statistical Analysis"], maxAssignments: 2 },
+            { name: "Dr. Ankur Jain", designation: "Professor", department: "AI&DS", skills: ["Business Intelligence", "Predictive Modeling", "Marketing"], maxAssignments: 3 },
+            { name: "Dr. Tanay Renu Ghosh", designation: "Professor", department: "AI&DS", skills: ["Data Warehousing", "ETL Processes", "Sponsorship"], maxAssignments: 2 },
+            { name: "Prof. Dhruvraj Vitthalrao Pathak", designation: "Professor", department: "AI&ML", skills: ["Neural Networks", "Reinforcement Learning", "Technical Writing"], maxAssignments: 2 },
+            { name: "Prof. Soundharya Goyen", designation: "Professor", department: "AI&ML", skills: ["Applied Machine Learning", "Model Deployment", "Event Coordination"], maxAssignments: 3 },
+            { name: "Prof. Sonali Lalu", designation: "Professor", department: "AI&ML", skills: ["Ethical AI", "AI in Healthcare", "Public Relations"], maxAssignments: 2 },
+            { name: "Prof. Kajal Hardal Khobragade", designation: "Professor", department: "AI&ML", skills: ["AI for Robotics", "Computer Vision", "Volunteer Management"], maxAssignments: 2 },
+            { name: "Prof. Jai Rastogi", designation: "Professor", department: "AI&ML", skills: ["AI in Finance", "Algorithmic Trading", "Budgeting"], maxAssignments: 3 },
+            { name: "Prof. Aujwal Shaikh", designation: "Professor", department: "AI&ML", skills: ["AI Ethics", "Legal Aspects of AI", "Documentation"], maxAssignments: 2 },
+            { name: "Prof. Nitin Vilasrao Sanjay", designation: "Professor", department: "BBA", skills: ["Marketing Strategy", "Brand Management", "Promotions"], maxAssignments: 3 },
+            { name: "Prof. Jadhav Harshada Rajendra", designation: "Professor", department: "BBA", skills: ["Human Resources", "Organizational Behavior", "Guest Relations"], maxAssignments: 2 },
+            { name: "Prof. Devendra Dattatray Kote", designation: "Professor", department: "BBA", skills: ["Financial Management", "Event Budgeting", "Vendor Management"], maxAssignments: 2 },
+            { name: "Dr. Kulkarni K", designation: "Professor", department: "BBA", skills: ["Supply Chain Management", "Logistics", "Operations"], maxAssignments: 3 },
+            { name: "Prof. Jayheri Jayraj Bhabu", designation: "Professor", department: "BBA", skills: ["Entrepreneurship", "Business Development", "Sponsorship Acquisition"], maxAssignments: 2 },
+            { name: "Dr. Eswaran Karunahakati", designation: "Professor", department: "MBA", skills: ["Strategic Planning", "Leadership", "Crisis Management"], maxAssignments: 2 },
+            { name: "Prof. Rajeswari Mahakali", designation: "Professor", department: "MBA", skills: ["International Business", "Cross-cultural Communication", "Protocol Management"], maxAssignments: 3 },
+            { name: "Prof. Nikita Wahi", designation: "Professor", department: "B.COM", skills: ["Accounting", "Financial Reporting", "Audit"], maxAssignments: 2 },
+            { name: "Prof. Rohan Sharma", designation: "Assistant Professor", department: "Mechanical", skills: ["CAD Design", "Robotics", "Workshop Coordination"], maxAssignments: 3 },
+            { name: "Prof. Priya Singh", designation: "Assistant Professor", department: "Civil", skills: ["Structural Analysis", "Sustainability", "Infrastructure Planning"], maxAssignments: 2 },
+            { name: "Dr. Suresh Kumar", designation: "Professor", department: "Electrical", skills: ["Power Systems", "Electronics", "Technical Exhibitions"], maxAssignments: 2 },
+            { name: "Ms. Anjali Verma", designation: "Admin Staff", department: "Administration", skills: ["Logistics", "Record Keeping", "Communication"], maxAssignments: 4 },
+            { name: "Mr. Deepak Patil", designation: "Technical Staff", department: "IT Support", skills: ["Networking", "Audio-Visual", "Troubleshooting"], maxAssignments: 4 },
+            { name: "Ms. Kavita Rao", designation: "Event Coordinator", department: "Student Affairs", skills: ["Event Management", "Student Engagement", "Public Relations"], maxAssignments: 3 },
+            { name: "Mr. Alok Gupta", designation: "Librarian", department: "Library", skills: ["Information Management", "Research Support", "Documentation"], maxAssignments: 2 },
+            { name: "Ms. Sanjana Desai", designation: "Accounts Officer", department: "Finance", skills: ["Budgeting", "Expense Tracking", "Financial Reporting"], maxAssignments: 3 },
+            { name: "Mr. Vivek Chauhan", designation: "Security Head", department: "Security", skills: ["Crowd Management", "Emergency Response", "Safety Protocols"], maxAssignments: 2 },
+            { name: "Ms. Shweta Sharma", designation: "Marketing Executive", department: "Marketing", skills: ["Digital Marketing", "Content Creation", "Social Media"], maxAssignments: 3 },
+            { name: "Mr. Rajeev Malhotra", designation: "Sports Officer", department: "Sports", skills: ["Sports Coordination", "Team Management", "Fair Play"], maxAssignments: 2 },
+            { name: "Ms. Geeta Devi", designation: "Catering Manager", department: "Food Services", skills: ["Menu Planning", "Hygiene Standards", "Logistics"], maxAssignments: 3 },
         ];
+
+        // Resource Data
+        const availableRooms = [
+            { name: "University Auditorium", capacity: 1000, features: ["Stage", "Projector", "Sound System", "Green Room"] },
+            { name: "Main Conference Hall (Block A)", capacity: 300, features: ["Projector", "Sound System", "Breakout Rooms", "Video Conferencing"] },
+            { name: "Seminar Hall 1 (Library Building)", capacity: 150, features: ["Projector", "Sound System", "Whiteboard"] },
+            { name: "Computer Lab 301", capacity: 50, features: ["Computers", "Projector", "Internet Access"] },
+            { name: "Innovation Hub Workshop Room", capacity: 40, features: ["Interactive Display", "Whiteboard", "Movable Furniture"] },
+            { name: "Outdoor Sports Ground", capacity: 5000, features: ["Running Track", "Football Field", "Bleachers"] },
+            { name: "Indoor Sports Complex", capacity: 1500, features: ["Basketball Court", "Badminton Courts", "Changing Rooms"] },
+            { name: "Cultural Plaza", capacity: 2000, features: ["Open Stage", "Seating Area", "Food Stalls Allowed"] },
+        ];
+
+        const availableEquipment = [
+            { name: "High-Lumen Projector", type: "AV", quantity: 5 },
+            { name: "Wireless Microphone Set", type: "Audio", quantity: 10 },
+            { name: "Professional Sound System", type: "Audio", quantity: 2 },
+            { name: "Laptop (Core i7, 16GB RAM)", type: "Computing", quantity: 20 },
+            { name: "VR Headsets", type: "Specialized", quantity: 5 },
+            { name: "3D Printers", type: "Specialized", quantity: 3 },
+            { name: "Video Camera (4K)", type: "AV", quantity: 3 },
+            { name: "Event Banner Printing Machine", type: "Marketing", quantity: 1 },
+            { name: "First Aid Kits", type: "Safety", quantity: 15 },
+            { name: "Walkie-Talkies", type: "Communication", quantity: 20 },
+            { name: "Portable Stage Units", type: "Logistics", quantity: 4 },
+        ];
+
+        // Speaker Database (Mock)
+        const speakerDatabase = [
+            { name: "Dr. Anya Sharma", expertise: ["AI Ethics", "Sustainable Tech", "Future of Education"], availability: "flexible" },
+            { name: "Mr. Vikram Patel", expertise: ["Blockchain", "Fintech", "Startup Ecosystem"], availability: "weekends" },
+            { name: "Prof. Lena Khan", expertise: ["Climate Change", "Environmental Policy", "Renewable Energy"], availability: "weekdays" },
+            { name: "Ms. Zara Singh", expertise: ["Digital Marketing", "Brand Building", "Social Media Strategy"], availability: "flexible" },
+            { name: "Coach Rahul Mehta", expertise: ["Sports Psychology", "Team Building", "Fitness Training"], availability: "weekends" },
+            { name: "Dr. Maya Devi", expertise: ["Quantum Computing", "Advanced Algorithms", "Theoretical Physics"], availability: "flexible" },
+        ];
+
 
         // Function to show custom modal
         function showCustomModal(message, type = 'alert', onConfirm = null) {
@@ -672,13 +776,13 @@
 
         // Close modal when close button is clicked
         closeModalButton.onclick = () => customModal.classList.remove('show');
+
         // Close modal when clicking outside of the content
         window.onclick = (event) => {
             if (event.target == customModal) {
                 customModal.classList.remove('show');
             }
         };
-
 
         // Conditional display for Venue input
         modeSelect.addEventListener('change', () => {
@@ -728,401 +832,442 @@
             // Simulate API call delay
             await new Promise(resolve => setTimeout(resolve, 2000));
 
-            const { eventType, audience, theme, eventDate, duration, mode, venue, budgetLimit } = formData;
+            const { eventType, audience, theme, eventDate, duration, mode, venue, budgetLimit, customCommittees } = formData;
 
-            // Separate professors from other staff
-            let availableProfessors = staffData.filter(staff => staff.designation.includes('Professor') || staff.designation.includes('HOD') || staff.designation.includes('Director'));
-            let nonProfessorStaff = staffData.filter(staff => !staff.designation.includes('Professor') && !staff.designation.includes('HOD') && !staff.designation.includes('Director'));
+            // Deep copy staffData to track assignments for this plan
+            let workingStaffData = JSON.parse(JSON.stringify(staffData));
+            workingStaffData.forEach(s => s.currentAssignments = 0); // Initialize assignment counter
 
             // Function to get a unique professor and a specified number of volunteers
-            function assignCommitteeMembers(committeeName, targetVolunteers, departmentKeywords = []) {
+            function assignCommitteeMembers(committeeName, targetVolunteers, requiredSkills = [], departmentKeywords = []) {
                 let assignedProfessor = null;
-                let selectedVolunteers = new Set();
+                let selectedVolunteers = [];
                 let members = [];
 
-                // Assign one unique professor
+                // 1. Prioritize Professor for lead, then ensure balanced assignment
+                const availableProfessors = workingStaffData.filter(s =>
+                    s.designation.includes('Professor') && s.currentAssignments < s.maxAssignments
+                ).sort((a, b) => a.currentAssignments - b.currentAssignments); // Sort by fewest assignments
+
                 if (availableProfessors.length > 0) {
-                    // Try to find a relevant professor first
-                    const relevantProfIndex = availableProfessors.findIndex(p => departmentKeywords.some(keyword => p.department.includes(keyword)));
-                    if (relevantProfIndex !== -1) {
-                        assignedProfessor = availableProfessors[relevantProfIndex];
-                        availableProfessors.splice(relevantProfIndex, 1); // Remove assigned professor
-                    } else {
-                        // If no relevant professor, pick any available professor
-                        assignedProfessor = availableProfessors.shift(); // Take the first available professor
+                    // Try to match professor to department or skills
+                    let bestProf = availableProfessors.find(prof =>
+                        departmentKeywords.some(keyword => prof.department.toLowerCase().includes(keyword.toLowerCase())) ||
+                        requiredSkills.some(skill => prof.skills.includes(skill))
+                    );
+                    if (!bestProf) {
+                        bestProf = availableProfessors[0]; // Fallback to least assigned
                     }
-                    if (assignedProfessor) {
-                        members.push(`Prof. ${assignedProfessor.name.split(' ').slice(1).join(' ')}`);
-                    }
+                    assignedProfessor = bestProf;
+                    assignedProfessor.currentAssignments++;
+                    members.push(assignedProfessor.name);
                 }
 
-                // Assign volunteers (non-professor staff)
-                const relevantVolunteers = nonProfessorStaff.filter(s => departmentKeywords.some(keyword => s.department.includes(keyword)));
-                for (let i = 0; i < relevantVolunteers.length && selectedVolunteers.size < targetVolunteers; i++) {
-                    selectedVolunteers.add(relevantVolunteers[i].name);
+
+                // 2. Assign volunteers based on skills and availability
+                let eligibleVolunteers = workingStaffData.filter(s =>
+                    !s.designation.includes('Professor') && !members.includes(s.name) && s.currentAssignments < s.maxAssignments
+                );
+
+                // Sort eligible volunteers: 1. by matching skills, 2. by fewest assignments
+                eligibleVolunteers.sort((a, b) => {
+                    const aSkillMatch = requiredSkills.filter(skill => a.skills.includes(skill)).length;
+                    const bSkillMatch = requiredSkills.filter(skill => b.skills.includes(skill)).length;
+
+                    if (aSkillMatch !== bSkillMatch) {
+                        return bSkillMatch - aSkillMatch; // More skill matches first
+                    }
+                    return a.currentAssignments - b.currentAssignments; // Then fewer assignments
+                });
+
+                for (let i = 0; i < targetVolunteers && eligibleVolunteers.length > 0; i++) {
+                    const volunteer = eligibleVolunteers.shift(); // Take the best fit
+                    selectedVolunteers.push(volunteer);
+                    volunteer.currentAssignments++;
+                    members.push(volunteer.name);
                 }
 
-                if (selectedVolunteers.size < targetVolunteers) {
-                    for (let i = 0; i < nonProfessorStaff.length && selectedVolunteers.size < targetVolunteers; i++) {
-                        if (!selectedVolunteers.has(nonProfessorStaff[i].name)) { // Ensure unique volunteers
-                             selectedVolunteers.add(nonProfessorStaff[i].name);
-                        }
+                // If not enough volunteers found, try to include remaining staff
+                if (selectedVolunteers.length < targetVolunteers) {
+                    let remainingStaff = workingStaffData.filter(s =>
+                        !members.includes(s.name) && s.currentAssignments < s.maxAssignments
+                    ).sort((a, b) => a.currentAssignments - b.currentAssignments);
+
+                    for (let i = 0; i < (targetVolunteers - selectedVolunteers.length) && remainingStaff.length > 0; i++) {
+                        const staff = remainingStaff.shift();
+                        selectedVolunteers.push(staff);
+                        staff.currentAssignments++;
+                        members.push(staff.name);
                     }
                 }
-
-                Array.from(selectedVolunteers).forEach(name => members.push(name));
 
                 return {
-                    professor: assignedProfessor ? assignedProfessor.name : 'N/A', // Store full name of assigned professor
-                    profCount: assignedProfessor ? 1 : 0,
-                    volunteers: Array.from(selectedVolunteers),
-                    volunteerCount: Array.from(selectedVolunteers).length,
-                    members: members // For display
+                    professor: assignedProfessor ? assignedProfessor.name : "To Be Assigned",
+                    members: members
                 };
             }
 
+            // --- Event Title & Description ---
+            const eventTitle = `${theme} - ${eventType} ${eventDate.split('-')[0]}`;
+            let eventDescription = `Get ready for the exciting "${eventTitle}"! This ${duration}-day ${eventType} is tailored for ${audience} at our esteemed university. Focusing on the captivating theme of "${theme}", we aim to provide a transformative experience.`;
 
-            let committees = [];
-            let assignedCommittees = {}; // Object to hold committee and assigned staff names
-            let budgetBreakdown = [];
+            // --- Schedule Generation ---
             let schedule = [];
-            let posterIdeas = [];
-            let socialMediaCaption = "";
-            let hashtags = "";
-            let eventTitle = "";
-            let eventDescription = "";
-            let decorationSuggestions = [];
-            let sportsSeminarNames = []; // New
-            let sportsQuotes = []; // New
+            const isFullDay = duration >= 0.8;
+            const hasSpeakers = (eventType === "Seminar" || eventType === "Workshop" || eventType === "Conference" || eventType === "Webinar");
 
-            // Core Committees with Professor and Volunteer requirements
-            assignedCommittees['Saraswati Pujan Team'] = assignCommitteeMembers('Saraswati Pujan Team', 3, ['Administration', 'SOFL']);
-            assignedCommittees['Anchor Committee'] = assignCommitteeMembers('Anchor Committee', 2, ['SOFL', 'Administration']);
-            assignedCommittees['Photographer Team'] = assignCommitteeMembers('Photographer Team', 2, ['Non-Teaching', 'C.S.E', 'AI&ML']);
-            assignedCommittees['Decoration Team'] = assignCommitteeMembers('Decoration Team', 4, ['Administration', 'Non-Teaching', 'SOPS']);
-            assignedCommittees['Volunteer Committee'] = assignCommitteeMembers('Volunteer Committee', 10, ['BBA', 'MBA', 'SOPS', 'Administration']);
-
-
-            // Initial Schedule Entry
-            schedule.push({ time: '09:00 AM', activity: 'Inaugural Ceremony & Welcome', speaker: 'Saraswati Pujan Team / Event Hosts' });
-
-
-            // Determine additional committees and adjust schedule based on event type
-            switch (eventType) {
-                case 'Seminar':
-                case 'Workshop':
-                case 'Webinar':
-                    assignedCommittees['Logistics Committee'] = assignCommitteeMembers('Logistics Committee', 5, ['Administration', 'SOPS']);
-                    assignedCommittees['Publicity Committee'] = assignCommitteeMembers('Publicity Committee', 3, ['Administration', 'BBA']);
-                    assignedCommittees['Technical Committee'] = assignCommitteeMembers('Technical Committee', 4, ['C.S.E', 'AI&ML', 'CS', 'AI&DS']);
-                    assignedCommittees['Hospitality Committee'] = assignCommitteeMembers('Hospitality Committee', 3, ['Administration', 'SOFL']);
-
-                    eventTitle = `Future Frontiers: A ${eventType} on ${theme}`;
-                    eventDescription = `Explore the cutting-edge of "${theme}" in this insightful ${eventType} designed for ${audience}. Dive deep into new concepts and gain valuable knowledge.`;
-                    schedule.push(
-                        { time: '10:00 AM', activity: 'Registration & Networking', speaker: 'Event Team' },
-                        { time: '10:30 AM', activity: `Keynote Address: Innovations in ${theme}`, speaker: 'Dr. Isabella Chen' },
-                        { time: '11:30 AM', activity: 'Interactive Session: Applying ${theme} Concepts', speaker: 'Expert Panel' },
-                        { time: '01:00 PM', activity: 'Lunch Break & Discussions', speaker: '' }
-                    );
-                    posterIdeas = [
-                        `Sleek, futuristic design with glowing circuit patterns on a deep blue background.`,
-                        `Minimalist design with cool-tone gradients and abstract data visualizations.`
-                    ];
-                    socialMediaCaption = `💡 Dive into the future! Join our "${eventTitle}" ${eventType} on ${eventDate}. Discover breakthroughs in "${theme}"! Register now!`;
-                    hashtags = `#${eventType.replace(/\s/g, '')} #${theme.replace(/\s/g, '')} #FutureTech #Innovation`;
-                    decorationSuggestions = [
-                        `Blue and green LED strip lights, digital projection mapping.`,
-                        `Geometric shapes and reflective surfaces for a modern, techy feel.`,
-                        `Minimalistic stage design with a focus on lighting.`
-                    ];
-
-                    // Specific for Sports Seminar
-                    if (theme.toLowerCase().includes('sport') || theme.toLowerCase().includes('fitness') || theme.toLowerCase().includes('athletic')) {
-                        sportsSeminarNames = [
-                            `The Winning Edge: Strategies for Peak Performance`,
-                            `Mind Games: Psychology of Sports Success`,
-                            `Beyond the Game: Sports for Life`,
-                            `Future of Athletics: Tech & Training`,
-                            `Unleash Your Inner Champion`
-                        ];
-                        sportsQuotes = [
-                            `"The only way to prove that you’re a good sport is to lose." - Ernie Banks`,
-                            `"I hated every minute of training, but I said, 'Don’t quit. Suffer now and live the rest of your life as a champion.'" - Muhammad Ali`,
-                            `"It's not whether you get knocked down; it's whether you get up." - Vince Lombardi`,
-                            `"You miss 100% of the shots you don’t take." - Wayne Gretzky`,
-                            `"Champions keep playing until they get it right." - Billie Jean King`
-                        ];
-                    }
-                    break;
-                case 'Fest':
-                case 'Cultural Event':
-                case 'Sports Event': // Also include Sports Event here
-                    assignedCommittees['Logistics Committee'] = assignCommitteeMembers('Logistics Committee', 10, ['Administration', 'SOPS']);
-                    assignedCommittees['Publicity Committee'] = assignCommitteeMembers('Publicity Committee', 7, ['Administration', 'BBA']);
-                    assignedCommittees['Hospitality Committee'] = assignCommitteeMembers('Hospitality Committee', 5, ['Administration', 'SOFL']);
-                    assignedCommittees['Sponsorship Committee'] = assignCommitteeMembers('Sponsorship Committee', 5, ['BBA', 'MBA']);
-                    assignedCommittees['Security Committee'] = assignCommitteeMembers('Security Committee', 7, ['Administration', 'PE']);
-                    assignedCommittees['Event Management Committee'] = assignCommitteeMembers('Event Management Committee', 10, ['Administration', 'BBA', 'MBA']);
-
-                    eventTitle = `Harmonic Convergence: University ${eventType}`;
-                    eventDescription = `Experience the vibrant energy of "${eventTitle}"! A grand ${eventType} celebrating "${theme}" for ${audience}, blending cultural richness with cool aesthetics.`;
-                    schedule.push(
-                        { time: '10:00 AM', activity: 'Gates Open & Welcome', speaker: '' },
-                        { time: '10:30 AM', activity: 'Inauguration Ceremony & Cultural Performances', speaker: 'University Dignitaries' },
-                        { time: '11:00 AM', activity: 'Interactive Workshops / Sports Competitions', speaker: 'Various Groups' },
-                        { time: '02:00 PM', activity: 'Food Stalls & Leisure Activities', speaker: '' }
-                    );
-                    posterIdeas = [
-                        `Dynamic abstract shapes in blue, green, and purple, symbolizing convergence.`,
-                        `Collage of diverse cultural elements or sports imagery with a cool-tone overlay.`
-                    ];
-                    socialMediaCaption = `🎉 Get ready for "${eventTitle}"! Join us on ${eventDate} for an unforgettable ${eventType} filled with ${theme} and vibrant experiences. Don't miss out!`;
-                    hashtags = `#${eventType.replace(/\s/g, '')} #${theme.replace(/\s/g, '')} #CulturalVibes #SportsFiesta`;
-                    decorationSuggestions = [
-                        `Flowing fabrics in cool colors (blue, silver, white).`,
-                        `Ambient lighting with cool gels and spotlights.`,
-                        `Art installations with geometric patterns or reflective surfaces.`
-                    ];
-
-                    // Specific for Sports Event
-                    if (eventType === 'Sports Event') {
-                        sportsSeminarNames = [
-                            `Varsity Victory: Sportsmanship & Success`,
-                            `Athletic Apex: Reaching Your Potential`,
-                            `Game Changers: Innovation in University Sports`,
-                            `The Spirit of Competition: A Sports Summit`
-                        ];
-                        sportsQuotes = [
-                            `"Winners never quit and quitters never win." - Vince Lombardi`,
-                            `"The harder the battle, the sweeter the victory." - Les Brown`,
-                            `"Sports do not build character. They reveal it." - Heywood Broun`,
-                            `"It's not the will to win that matters—everyone has that. It's the will to prepare to win that matters." - Paul Bryant`
-                        ];
-                    }
-                    break;
-                case 'Hackathon':
-                    assignedCommittees['Logistics Committee'] = assignCommitteeMembers('Logistics Committee', 8, ['Administration', 'SOPS']);
-                    assignedCommittees['Publicity Committee'] = assignCommitteeMembers('Publicity Committee', 5, ['Administration', 'BBA']);
-                    assignedCommittees['Technical Committee'] = assignCommitteeMembers('Technical Committee', 10, ['C.S.E', 'AI&ML', 'CS', 'AI&DS']);
-                    assignedCommittees['Sponsorship Committee'] = assignCommitteeMembers('Sponsorship Committee', 4, ['BBA', 'MBA']);
-                    assignedCommittees['Mentorship Committee'] = assignCommitteeMembers('Mentorship Committee', 6, ['C.S.E', 'AI&ML', 'CS', 'AI&DS']);
-
-                    eventTitle = `Code Nexus: ${theme} Hackathon`;
-                    eventDescription = `Connect at Code Nexus: ${theme} Hackathon! A challenging coding event for ${audience} to innovate and build solutions around "${theme}".`;
-                    schedule.push(
-                        { time: '10:00 AM', activity: 'Opening Ceremony & Problem Statement Reveal', speaker: 'Organizers' },
-                        { time: '11:00 AM', activity: 'Coding Commences!', speaker: 'Participants' },
-                        { time: '08:00 PM', activity: 'Mentor Sessions & Code Review', speaker: 'Industry Experts' },
-                        { time: '09:00 AM (Next Day)', activity: 'Project Submissions & Judging', speaker: '' }
-                    );
-                    posterIdeas = [
-                        `Abstract geometric patterns resembling circuitry in cool blues and greens.`,
-                        `Minimalist design with lines of code forming an architectural shape.`
-                    ];
-                    socialMediaCaption = `💻 Code, create, conquer! 🚀 Join our ${theme} Hackathon on ${eventDate}. Build, innovate, and connect! Register your team now!`;
-                    hashtags = `#Hackathon #${theme.replace(/\s/g, '')} #CodingChallenge #TechInnovation`;
-                    decorationSuggestions = [
-                        `Blue and white light accents, modern furniture.`,
-                        `Screens displaying live coding sessions or data visualizations.`,
-                        `Comfortable, collaborative workspaces with good lighting.`
-                    ];
-                    break;
-                case 'Exhibition':
-                    assignedCommittees['Logistics Committee'] = assignCommitteeMembers('Logistics Committee', 10, ['Administration', 'SOPS']);
-                    assignedCommittees['Publicity Committee'] = assignCommitteeMembers('Publicity Committee', 7, ['Administration', 'BBA']);
-                    assignedCommittees['Hospitality Committee'] = assignCommitteeMembers('Hospitality Committee', 5, ['Administration', 'SOFL']);
-                    assignedCommittees['Stall Management Committee'] = assignCommitteeMembers('Stall Management Committee', 8, ['Administration', 'BBA', 'MBA']);
-                    assignedCommittees['Security Committee'] = assignCommitteeMembers('Security Committee', 5, ['Administration', 'PE']);
-
-                    eventTitle = `Innovation Showcase: The ${theme} Expo`;
-                    eventDescription = `Step into the future at Innovation Showcase: The ${theme} Expo! An exhibition presenting groundbreaking projects and ideas from ${audience}, focusing on cool and sustainable innovations.`;
-                    schedule.push(
-                        { time: '10:00 AM', activity: 'Exhibition Gates Open', speaker: '' },
-                        { time: '10:30 AM', activity: 'Inauguration & Ribbon Cutting', speaker: 'Chief Guest' },
-                        { time: '11:00 AM', activity: 'Stall Demonstrations & Interactive Displays', speaker: 'Exhibitors' },
-                        { time: '03:00 PM', activity: 'Panel Discussion on Future Trends', speaker: 'Industry Experts' }
-                    );
-                    posterIdeas = [
-                        `Clean, modern design with product mockups and cool-tone color palettes.`,
-                        `Architectural lines and light effects highlighting key innovations.`
-                    ];
-                    socialMediaCaption = `🔬 Discover innovation at The ${theme} Expo on ${eventDate}! Witness groundbreaking projects and connect with brilliant minds. Don't miss this future-forward event!`;
-                    hashtags = `#Exhibition #${theme.replace(/\s/g, '')} #InnovationExpo #FutureTech`;
-                    decorationSuggestions = [
-                        `Bright, clean lighting with blue/white accents.`,
-                        `Sleek display stands and clear signage.`,
-                        `Interactive exhibits with touchscreens and projection.`
-                    ];
-                    break;
-                default:
-                    assignedCommittees['Logistics Committee'] = assignCommitteeMembers('Logistics Committee', 5, ['Administration', 'SOPS']);
-                    assignedCommittees['Publicity Committee'] = assignCommitteeMembers('Publicity Committee', 3, ['Administration', 'BBA']);
-                    assignedCommittees['Hospitality Committee'] = assignCommitteeMembers('Hospitality Committee', 3, ['Administration', 'SOFL']);
-
-                    eventTitle = `The ${theme} ${eventType}: University Edition`;
-                    eventDescription = `Join us for a fantastic ${eventType} on "${theme}" for ${audience}. Expect an engaging and informative experience!`;
-                    schedule.push(
-                        { time: '10:00 AM', activity: 'Opening Remarks', speaker: 'Organizers' },
-                        { time: '11:00 AM', activity: 'Main Activity', speaker: '' },
-                        { time: '01:00 PM', activity: 'Break', speaker: '' },
-                        { time: '02:00 PM', activity: 'Closing Remarks', speaker: '' }
-                    );
-                    posterIdeas = [
-                        `Clean, crisp design with cool tones and minimal text.`,
-                        `Abstract patterns reflecting the theme, with a modern feel.`
-                    ];
-                    socialMediaCaption = `Get ready for our ${eventType} - "${eventTitle}" on ${eventDate}! It's going to be great.`;
-                    hashtags = `#UniversityEvent #${eventType.replace(/\s/g, '')} #${theme.replace(/\s/g, '')} #CampusLife`;
-                    decorationSuggestions = [
-                        `Soft blue and white lighting.`,
-                        `Simple, elegant backdrops.`,
-                        `Comfortable seating arrangements.`
-                    ];
-            }
-
-            // Budget Breakdown (simplified mock)
-            const budget = parseFloat(budgetLimit);
-            budgetBreakdown = [
-                { item: 'Venue Rental (if applicable)', cost: (mode === 'Online' ? 0 : budget * 0.3).toFixed(2) },
-                { item: 'Food & Beverages', cost: (budget * 0.25).toFixed(2) },
-                { item: 'Technical Setup', cost: (budget * 0.2).toFixed(2) },
-                { item: 'Marketing & Publicity', cost: (budget * 0.15).toFixed(2) },
-                { item: 'Miscellaneous / Contingency', cost: (budget * 0.1).toFixed(2) }
+            const commonActivities = [
+                { time: "09:00 AM - 09:30 AM", activity: "Registration & Welcome", speaker: "Event Team" },
+                { time: "09:30 AM - 10:00 AM", activity: "Opening Ceremony", speaker: "University Dean/VC" },
+                { time: "01:00 PM - 02:00 PM", activity: "Lunch Break", speaker: "" },
+                { time: "05:00 PM - 05:30 PM", activity: "Closing Remarks & Vote of Thanks", speaker: "Head Coordinator" },
             ];
 
-            // Letter of Permission (template)
-            const letter = `
-[Your Club Name/Logo]
-[Your Club Address]
-[Your Club Contact Number]
-[Your Club Email]
+            if (hasSpeakers) {
+                const availableSpeakers = [...speakerDatabase]; // Copy to avoid modifying original
+                schedule.push(commonActivities[0]); // Registration
+                schedule.push(commonActivities[1]); // Opening
+                schedule.push({ time: "10:00 AM - 11:30 AM", activity: "Keynote Session", speaker: availableSpeakers.length > 0 ? availableSpeakers.shift().name : "Invited Expert" });
+                schedule.push({ time: "11:30 AM - 01:00 PM", activity: `Interactive Session on ${theme}`, speaker: availableSpeakers.length > 0 ? availableSpeakers.shift().name : "Industry Leader" });
+                schedule.push(commonActivities[2]); // Lunch
+                schedule.push({ time: "02:00 PM - 03:30 PM", activity: "Panel Discussion / Hands-on Workshop", speaker: "Multiple Experts" });
+                schedule.push({ time: "03:30 PM - 04:30 PM", activity: "Networking & Refreshments", speaker: "All Attendees" });
+                schedule.push(commonActivities[3]); // Closing
+            } else if (eventType === "Fest" || eventType === "Cultural Event") {
+                schedule = [
+                    { time: "09:00 AM - 10:00 AM", activity: "Event Inauguration & Flag Off", speaker: "Chief Guest" },
+                    { time: "10:00 AM - 12:00 PM", activity: "Cultural Performances / Competitions", speaker: "Student Groups" },
+                    { time: "12:00 PM - 01:00 PM", activity: "Interactive Stalls & Fun Activities", speaker: "Various Teams" },
+                    { time: "01:00 PM - 02:00 PM", activity: "Lunch Break", speaker: "" },
+                    { time: "02:00 PM - 04:00 PM", activity: "Main Stage Performances / Grand Competition", speaker: "Selected Acts" },
+                    { time: "04:00 PM - 05:00 PM", activity: "Prize Distribution & Closing Ceremony", speaker: "Organizing Committee" },
+                ];
+            } else if (eventType === "Hackathon") {
+                schedule = [
+                    { time: "09:00 AM - 10:00 AM", activity: "Hackathon Briefing & Team Formation", speaker: "Event Organizers" },
+                    { time: "10:00 AM - 01:00 PM", activity: "Coding Session (Phase 1)", speaker: "Participants" },
+                    { time: "01:00 PM - 02:00 PM", activity: "Lunch Break", speaker: "" },
+                    { time: "02:00 PM - 05:00 PM", activity: "Coding Session (Phase 2) & Mentoring", speaker: "Mentors" },
+                    { time: "05:00 PM - 06:00 PM", activity: "Idea Submission & Initial Review", speaker: "Judges" },
+                    // Overnight for multi-day hackathons
+                ];
+                if (duration > 1) {
+                     schedule.push({ time: "Next Day 09:00 AM - 12:00 PM", activity: "Final Coding & Project Polishing", speaker: "Participants" });
+                     schedule.push({ time: "12:00 PM - 01:00 PM", activity: "Project Presentations & Judging", speaker: "Teams & Judges" });
+                     schedule.push({ time: "01:00 PM - 02:00 PM", activity: "Lunch Break", speaker: "" });
+                     schedule.push({ time: "02:00 PM - 03:00 PM", activity: "Results Announcement & Awards", speaker: "Organizers" });
+                }
+            } else if (eventType === "Sports Event") {
+                schedule = [
+                    { time: "08:00 AM - 08:30 AM", activity: "Athlete Registration & Warm-up", speaker: "Sports Committee" },
+                    { time: "08:30 AM - 09:00 AM", activity: "Opening Ceremony & Oath", speaker: "Sports Director" },
+                    { time: "09:00 AM - 12:00 PM", activity: "Morning Matches/Competitions", speaker: "Referees" },
+                    { time: "12:00 PM - 01:00 PM", activity: "Lunch Break", speaker: "" },
+                    { time: "01:00 PM - 04:00 PM", activity: "Afternoon Matches/Finals", speaker: "Referees" },
+                    { time: "04:00 PM - 05:00 PM", activity: "Prize Distribution & Closing Ceremony", speaker: "Chief Guest" },
+                ];
+            } else if (eventType === "Exhibition") {
+                schedule = [
+                    { time: "09:00 AM - 10:00 AM", activity: "Exhibition Opening & Ribbon Cutting", speaker: "University Dignitary" },
+                    { time: "10:00 AM - 01:00 PM", activity: "Stall Visits & Demonstrations", speaker: "Exhibitors" },
+                    { time: "01:00 PM - 02:00 PM", activity: "Lunch Break", speaker: "" },
+                    { time: "02:00 PM - 04:00 PM", activity: "Interactive Sessions & Product Launches", speaker: "Companies/Innovators" },
+                    { time: "04:00 PM - 05:00 PM", activity: "Audience Voting & Awards (if applicable)", speaker: "Organizing Committee" },
+                ];
+            }
 
-[Date: ${new Date().toLocaleDateString('en-GB')}]
 
-The Dean/Principal,
-[University Name],
-[University Address].
+            // --- Resource Suggestions ---
+            let suggestedRooms = [];
+            let suggestedEquipment = [];
+            if (mode === 'Offline' || mode === 'Hybrid') {
+                if (eventType === "Conference" || eventType === "Seminar" || eventType === "Webinar" || eventType === "Exhibition") {
+                    suggestedRooms.push(availableRooms.find(r => r.name.includes("Auditorium") || r.name.includes("Conference Hall")) || availableRooms[0]);
+                    suggestedEquipment.push(availableEquipment.find(e => e.name.includes("Projector")));
+                    suggestedEquipment.push(availableEquipment.find(e => e.name.includes("Microphone")));
+                    if (eventType === "Exhibition") {
+                        suggestedEquipment.push(availableEquipment.find(e => e.name.includes("3D Printers")));
+                    }
+                } else if (eventType === "Hackathon" || eventType === "Workshop") {
+                    suggestedRooms.push(availableRooms.find(r => r.name.includes("Computer Lab") || r.name.includes("Workshop")) || availableRooms[0]);
+                    suggestedEquipment.push(availableEquipment.find(e => e.name.includes("Laptop")));
+                    suggestedEquipment.push(availableEquipment.find(e => e.name.includes("Projector")));
+                } else if (eventType === "Sports Event") {
+                    suggestedRooms.push(availableRooms.find(r => r.name.includes("Sports Ground") || r.name.includes("Sports Complex")) || availableRooms[0]);
+                    suggestedEquipment.push(availableEquipment.find(e => e.name.includes("Sound System")));
+                    suggestedEquipment.push(availableEquipment.find(e => e.name.includes("First Aid Kits")));
+                } else if (eventType === "Fest" || eventType === "Cultural Event") {
+                    suggestedRooms.push(availableRooms.find(r => r.name.includes("Plaza") || r.name.includes("Auditorium")) || availableRooms[0]);
+                    suggestedEquipment.push(availableEquipment.find(e => e.name.includes("Sound System")));
+                    suggestedEquipment.push(availableEquipment.find(e => e.name.includes("Video Camera")));
+                }
+            } else { // Online mode
+                eventDescription += ` The event will be conducted entirely online, leveraging virtual platforms to connect with our audience.`;
+                suggestedRooms.push({ name: "Online Platform (e.g., Zoom, Google Meet, Microsoft Teams)", capacity: "N/A", features: ["Virtual Breakout Rooms", "Screen Sharing", "Recording"] });
+                suggestedEquipment.push({ name: "Stable Internet Connection", type: "Connectivity", quantity: "N/A" });
+                suggestedEquipment.push({ name: "Webcam & Headset", type: "Peripherals", quantity: "N/A" });
+            }
+            suggestedEquipment = suggestedEquipment.filter(Boolean).filter((v,i,a)=>a.findIndex(t=>(t.name === v.name))===i); // Remove duplicates
 
-Subject: Request for Permission to Organize "${eventTitle}"
 
-Dear Sir/Madam,
+            // --- Speaker Suggestions (Enhanced) ---
+            let suggestedSpeakers = [];
+            if (hasSpeakers) {
+                // Filter speakers by expertise related to the theme/event type
+                const relevantSkills = [];
+                if (theme.toLowerCase().includes("ai")) relevantSkills.push("AI", "Machine Learning", "Deep Learning", "Quantum Computing");
+                if (theme.toLowerCase().includes("sustainable") || theme.toLowerCase().includes("climate")) relevantSkills.push("Sustainable Tech", "Environmental Policy", "Renewable Energy", "Climate Change");
+                if (eventType.toLowerCase().includes("hackathon")) relevantSkills.push("Blockchain", "Startup Ecosystem");
+                if (eventType.toLowerCase().includes("marketing")) relevantSkills.push("Digital Marketing", "Brand Building");
+                if (eventType.toLowerCase().includes("sports")) relevantSkills.push("Sports Psychology", "Fitness Training");
+                if (relevantSkills.length === 0) relevantSkills.push("Public Speaking"); // Default if no specific match
 
-We, the [Your Club Name] of [University Name], would like to seek your kind permission to organize an event titled "${eventTitle}" on ${eventDate} for a duration of ${duration} day(s). The event will be a ${eventType} with the theme "${theme}", targeting ${audience}.
+                const potentialSpeakers = speakerDatabase.filter(speaker =>
+                    relevantSkills.some(skill => speaker.expertise.includes(skill))
+                );
 
-The mode of the event will be ${mode}. ${mode !== 'Online' ? `The proposed venue for the event is ${venue}.` : ''}
+                if (potentialSpeakers.length > 0) {
+                    suggestedSpeakers = potentialSpeakers.slice(0, Math.min(3, potentialSpeakers.length)); // Suggest up to 3
+                } else {
+                    suggestedSpeakers = speakerDatabase.slice(0, 2); // Fallback to general speakers
+                }
+            }
 
-The estimated budget for this event is approximately INR ${budgetLimit}. We assure you that all necessary arrangements will be made to ensure the smooth and successful execution of the event, adhering to all university guidelines and regulations.
 
-We believe this event will greatly benefit the students and enhance the university's reputation. We are committed to ensuring a well-organized and impactful experience for all participants.
+            // --- Poster Design Ideas ---
+            const posterIdeas = [
+                `A futuristic design with circuit board patterns and glowing lines, reflecting the "${theme}" theme.`,
+                `Minimalist design focusing on the event title and key details, using the cool-tone palette.`,
+                `Dynamic imagery related to ${eventType} with a subtle gradient overlay.`,
+                `Illustration style: Abstract shapes and interconnected lines, emphasizing community and innovation.`
+            ];
 
-We kindly request your approval and support for this initiative. We are available to discuss the detailed plan and address any concerns you may have at your earliest convenience.
+            // --- Social Media & Marketing Content ---
+            const socialMediaCaption = `📢 Get ready for the ultimate ${eventType} experience! Join us for "${eventTitle}" on ${eventDate} (${duration} day(s)) at ${mode === 'Offline' ? (venue || 'our university campus') : 'our virtual platform'}! Explore the "${theme}" theme with ${audience}. Don't miss out! #UniversityEvent #${eventType.replace(/\s/g, '')} #${theme.replace(/\s/g, '')}`;
+            const hashtags = `#${eventType.replace(/\s/g, '')} #${theme.replace(/\s/g, '')} #UniversityLife #Innovation #KnowledgeSharing #CampusEvent`;
 
-Thank you for your time and consideration.
+            const emailDraft = `Subject: Invitation to "${eventTitle}"
+
+Dear [Recipient Name],
+
+We are thrilled to invite you to "${eventTitle}", a premier ${eventType} organized by [Your University Name]. This ${duration}-day event, focusing on the timely theme of "${theme}", is designed to enlighten and engage ${audience}.
+
+Join us on ${eventDate} at ${mode === 'Offline' ? (venue || 'our university campus') : 'our virtual platform'} for insightful sessions, interactive workshops, and unparalleled networking opportunities.
+
+[Link to Registration/More Info]
+
+We look forward to your participation!
 
 Sincerely,
+The Organizing Committee
+[Your University Name]`;
 
-[Your Name/Club President Name]
-[Your Designation/Club President]
-[Your Club Name]
-            `.trim();
+            const pressReleaseSnippet = `FOR IMMEDIATE RELEASE
+
+[University Name] Announces Grand "${eventTitle}" Event
+
+[City, State] – [Date]. [Your University Name] is proud to announce the upcoming "${eventTitle}", a landmark ${eventType} set to take place on ${eventDate}. The event will delve into the critical theme of "${theme}", bringing together leading experts and enthusiasts from various fields.
+
+Aimed at ${audience}, this ${duration}-day gathering promises to be an immersive experience, fostering dialogue, innovation, and collaboration. Key highlights include [mention a schedule highlight, e.g., "interactive workshops," "keynote speeches from industry leaders," "competitive challenges"].
+
+The event will be held ${mode === 'Offline' ? `at the ${venue || 'University campus'}` : 'online via a dedicated virtual platform'}. Registration is now open, and attendees are encouraged to secure their spots early.
+
+### About [Your University Name]
+[Brief university boilerplate]
+
+Contact:
+[Event Contact Name]
+[Event Contact Email]`;
 
 
-            return {
+            // --- Committees & Staff Assignment ---
+            let committees = {};
+            let committeeList = [
+                "Overall Coordination Committee",
+                "Logistics & Venue Committee",
+                "Technical & AV Committee",
+                "Marketing & Publicity Committee",
+                "Budget & Finance Committee",
+                "Guest & Speaker Management Committee",
+                "Student Volunteer Committee",
+                "Catering & Hospitality Committee",
+                "Security & First Aid Committee",
+                // Add more specific committees based on event type
+            ];
+
+            // Add custom committees from user input
+            if (customCommittees) {
+                const userCommittees = customCommittees.split(',').map(c => c.trim()).filter(c => c);
+                committeeList = [...new Set([...committeeList, ...userCommittees])]; // Add unique custom committees
+            }
+
+
+            committeeList.forEach(cName => {
+                let assigned = null;
+                switch (cName) {
+                    case "Overall Coordination Committee":
+                        assigned = assignCommitteeMembers(cName, 3, [], ["Administration", "Student Affairs"]);
+                        break;
+                    case "Logistics & Venue Committee":
+                        assigned = assignCommitteeMembers(cName, 4, ["Logistics", "Operations", "Infrastructure Planning"], ["Administration", "Civil", "Mechanical"]);
+                        break;
+                    case "Technical & AV Committee":
+                        assigned = assignCommitteeMembers(cName, 5, ["Networking", "Audio-Visual", "Technical Support", "Software Engineering"], ["C.S.E", "IT Support"]);
+                        break;
+                    case "Marketing & Publicity Committee":
+                        assigned = assignCommitteeMembers(cName, 3, ["Digital Marketing", "Content Creation", "Public Relations", "Brand Management"], ["Marketing", "BBA"]);
+                        break;
+                    case "Budget & Finance Committee":
+                        assigned = assignCommitteeMembers(cName, 2, ["Budgeting", "Expense Tracking", "Financial Reporting"], ["Finance", "BBA", "MBA"]);
+                        break;
+                    case "Guest & Speaker Management Committee":
+                        assigned = assignCommitteeMembers(cName, 3, ["Guest Relations", "Protocol Management", "Communication"], ["Student Affairs", "MBA", "BBA"]);
+                        break;
+                    case "Student Volunteer Committee":
+                        assigned = assignCommitteeMembers(cName, 5, ["Volunteer Management", "Student Engagement", "Team Building"], ["Student Affairs"]);
+                        break;
+                    case "Catering & Hospitality Committee":
+                        assigned = assignCommitteeMembers(cName, 3, ["Menu Planning", "Hygiene Standards", "Logistics"], ["Food Services", "Administration"]);
+                        break;
+                    case "Security & First Aid Committee":
+                        assigned = assignCommitteeMembers(cName, 4, ["Crowd Management", "Emergency Response", "Safety Protocols", "First Aid"], ["Security"]);
+                        break;
+                    default:
+                        // For custom committees or others, assign randomly with a professor and 2-3 others
+                        assigned = assignCommitteeMembers(cName, Math.floor(Math.random() * 2) + 2, [], []);
+                        break;
+                }
+                committees[cName] = assigned;
+            });
+
+
+            // --- Budget Breakdown ---
+            const totalBudget = parseFloat(budgetLimit);
+            let budget = {};
+            const budgetPercentages = {
+                "Venue & Infrastructure": 0.20,
+                "Marketing & Publicity": 0.15,
+                "Speaker Fees & Travel": 0.25,
+                "Catering & Hospitality": 0.15,
+                "Equipment & AV Rental": 0.10,
+                "Decorations & Ambiance": 0.05,
+                "Contingency (10%)": 0.10
+            };
+
+            for (const category in budgetPercentages) {
+                budget[category] = (totalBudget * budgetPercentages[category]).toFixed(2);
+            }
+            // Ensure total doesn't exceed budgetLimit due to rounding, adjust contingency
+            let calculatedTotal = Object.values(budget).reduce((sum, val) => sum + parseFloat(val), 0);
+            if (calculatedTotal > totalBudget) {
+                const excess = calculatedTotal - totalBudget;
+                budget["Contingency (10%)"] = (parseFloat(budget["Contingency (10%)"]) - excess).toFixed(2);
+                if (parseFloat(budget["Contingency (10%)"]) < 0) budget["Contingency (10%)"] = "0.00"; // Prevent negative contingency
+            }
+
+
+            // --- Decoration Suggestions ---
+            const decorationSuggestions = [
+                "Utilize LED uplighting in cool tones (blues, greens) to create an immersive atmosphere.",
+                "Incorporate themed props and backdrops related to '"+theme+"', such as abstract tech patterns for AI, or natural elements for sustainability.",
+                "Use minimalist yet elegant stage decor with subtle branding.",
+                "Consider interactive art installations or photo booths for audience engagement.",
+                "For 'Fest' or 'Cultural Event': Bright, vibrant colors and traditional elements alongside modern lighting.",
+                "For 'Sports Event': Banners with motivational quotes, team flags, and inflatable sports equipment."
+            ];
+
+            // --- Event Checklist (Expanded) ---
+            const eventChecklist = [
+                "Define Event Goals & Objectives",
+                "Set Date, Time, and Duration",
+                "Determine Event Mode (Online/Offline/Hybrid)",
+                "Establish Budget Limit and Breakdown",
+                "Formulate Event Theme and Audience Profile",
+                "Identify Key Speakers/Guests and Confirm Availability",
+                "Select and Book Venue/Platform & Necessary Resources (if Offline/Hybrid)",
+                "Assign Committees and Staff Responsibilities",
+                "Develop Detailed Event Schedule/Agenda",
+                "Design and Finalize Event Branding (Logo, Posters, Banners)",
+                "Create Marketing Strategy (Social Media, Email, Press Release)",
+                "Prepare Registration System/Invitation Process",
+                "Arrange for Catering & Hospitality",
+                "Plan for Security, First Aid, and Emergency Protocols",
+                "Finalize Equipment and AV requirements",
+                "Recruit and Brief Volunteers",
+                "Develop Contingency Plans for potential issues",
+                "Conduct Pre-Event Technical Checks and Rehearsals",
+                "Send out Final Reminders to Speakers, Staff, and Attendees",
+                "Post-Event: Collect Feedback, Analyze Success, Send Thank You Notes",
+                "Post-Event: Settle all Financials and Prepare Report",
+            ];
+
+            // --- Contingency Planning ---
+            let contingencyPlan = `Despite meticulous planning, unforeseen circumstances can arise. Here are some contingency measures:
+            * **Speaker Cancellation:** Have backup speakers or a panel discussion ready. Prepare alternative content like a Q&A session or a relevant video.
+            * **Technical Glitches (Online/Hybrid):** Ensure a robust internet connection, backup power, and a dedicated technical support team. Have pre-recorded content for critical sessions.
+            * **Lower Than Expected Attendance:** Implement last-minute marketing pushes, offer spot registrations, and engage attendees with interactive elements to enhance experience.
+            * **Venue Issues (Offline/Hybrid):** Have an alternative nearby venue identified, or a flexible layout that can be adjusted.
+            * **Budget Overruns:** Prioritize essential expenses, look for cost-saving alternatives, and be prepared to allocate from the contingency fund.
+            * **Unfavorable Weather (Offline):** Plan for indoor alternatives or sheltered areas for outdoor activities.
+            * **Medical Emergency:** Ensure readily available first aid, clear emergency exits, and contact details for nearest medical facilities.
+            * **Crowd Control Issues:** Establish clear entry/exit points, sufficient security personnel, and communication protocols.`;
+
+
+            currentPlanData = {
                 eventTitle,
                 eventDescription,
                 schedule,
                 posterIdeas,
                 socialMediaCaption,
                 hashtags,
-                committees: assignedCommittees, // Pass assigned staff directly
-                budgetBreakdown,
-                letter,
+                emailDraft,
+                pressReleaseSnippet,
+                committees,
+                budget,
                 decorationSuggestions,
-                sportsSeminarNames, // New
-                sportsQuotes // New
+                eventChecklist,
+                contingencyPlan,
+                sportsNames: eventType === "Sports Event" ? ["Champions Cup", "Athletic Zenith", "The Victory Sprint"] : [],
+                sportsQuotes: eventType === "Sports Event" ? ["“The harder the battle, the sweeter the victory.”", "“Push yourself because no one else is going to do it for you.”", "“Believe you can and you’re halfway there.”"] : [],
+                suggestedRooms,
+                suggestedEquipment,
+                suggestedSpeakers
             };
+
+            return currentPlanData;
         }
 
-        // Handle form submission
-        eventForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
-
-            // Simple validation: highlight empty required fields
-            let allFieldsValid = true;
-            const requiredInputs = eventForm.querySelectorAll('[required]');
-            requiredInputs.forEach(input => {
-                if (!input.value.trim()) {
-                    input.classList.add('border-red-500', 'ring-2', 'ring-red-200');
-                    allFieldsValid = false;
-                } else {
-                    input.classList.remove('border-red-500', 'ring-2', 'ring-red-200');
-                }
-            });
-
-            if (!allFieldsValid) {
-                showCustomModal("Please fill in all required fields.", "alert");
-                return;
-            }
-
-            // Collect form data
-            const formData = {
-                eventType: document.getElementById('eventType').value,
-                audience: document.getElementById('audience').value,
-                theme: document.getElementById('theme').value,
-                eventDate: document.getElementById('eventDate').value,
-                duration: parseFloat(document.getElementById('duration').value),
-                mode: document.getElementById('mode').value,
-                venue: document.getElementById('venue').value,
-                budgetLimit: parseFloat(document.getElementById('budgetLimit').value)
-            };
-
-            // Show loading spinner and hide form
-            eventForm.classList.add('hidden');
-            loadingSpinner.classList.remove('hidden');
-            planOutput.classList.add('hidden'); // Ensure output is hidden until ready
-
-            try {
-                const plan = await generateEventPlan(formData);
-                currentPlanData = plan; // Store the generated plan globally
-                displayEventPlan(plan);
-            } catch (error) {
-                console.error("Error generating plan:", error);
-                showCustomModal("An error occurred while generating the plan. Please try again.", "alert");
-            } finally {
-                loadingSpinner.classList.add('hidden');
-                planOutput.classList.remove('hidden');
-                // Apply fade-in-up, slide-in-left/right, scale-in animation to relevant elements
-                Array.from(planOutput.children).forEach(child => {
-                    if (child.classList.contains('fade-in-up') || child.classList.contains('slide-in-left') || child.classList.contains('slide-in-right') || child.classList.contains('scale-in')) {
-                        child.style.animation = 'none'; // Reset animation
-                        void child.offsetWidth; // Trigger reflow
-                        child.style.animation = null; // Reapply animation
-                    }
-                });
-            }
-        });
-
-        // Function to display the generated plan
+        // Display Generated Plan
         function displayEventPlan(plan) {
             outputTitle.textContent = plan.eventTitle;
             outputDescription.textContent = plan.eventDescription;
 
-            // Schedule
+            // Clear previous lists
             outputSchedule.innerHTML = '';
+            outputPosterIdeas.innerHTML = '';
+            outputCommittees.innerHTML = '';
+            outputBudget.innerHTML = '';
+            outputDecorations.innerHTML = '';
+            outputChecklist.innerHTML = '';
+            outputRooms.innerHTML = '';
+            outputEquipment.innerHTML = '';
+            outputSpeakers.innerHTML = '';
+            outputSportsNames.innerHTML = '';
+            outputSportsQuotes.innerHTML = '';
+
+            // Schedule
             plan.schedule.forEach(item => {
                 const row = document.createElement('tr');
                 row.className = 'border-b border-gray-200 hover:bg-gray-50';
                 row.innerHTML = `
-                    <td class="py-3 px-6 text-left whitespace-nowrap">${item.time}</td>
+                    <td class="py-3 px-6 text-left">${item.time}</td>
                     <td class="py-3 px-6 text-left">${item.activity}</td>
-                    <td class="py-3 px-6 text-left">${item.speaker}</td>
+                    <td class="py-3 px-6 text-left">${item.speaker || 'N/A'}</td>
                 `;
                 outputSchedule.appendChild(row);
             });
 
             // Poster Ideas
-            outputPosterIdeas.innerHTML = '';
             plan.posterIdeas.forEach(idea => {
                 const li = document.createElement('li');
                 li.textContent = idea;
@@ -1131,204 +1276,330 @@ Sincerely,
 
             // Social Media
             outputSocialMedia.textContent = plan.socialMediaCaption;
-            outputHashtags.textContent = plan.hashtags;
+            outputHashtags.innerHTML = `<span class="text-blue-600">${plan.hashtags.split(' ').join('</span> <span class="text-blue-600">')}</span>`; // Add color to hashtags
+            outputEmailDraft.textContent = plan.emailDraft;
+            outputPressRelease.textContent = plan.pressReleaseSnippet;
 
-            // Committees and Assigned Staff
-            outputCommittees.innerHTML = '';
+            // Committees
             for (const committeeName in plan.committees) {
-                if (plan.committees.hasOwnProperty(committeeName)) {
-                    const li = document.createElement('li');
-                    const committeeData = plan.committees[committeeName];
-                    const membersList = committeeData.members.length > 0
-                        ? `: ${committeeData.members.join(', ')}`
-                        : ': (No staff assigned yet)';
-
-                    li.textContent = `${committeeName}${membersList} (Professors: ${committeeData.profCount}, Volunteers: ${committeeData.volunteerCount})`;
-                    outputCommittees.appendChild(li);
-                }
+                const li = document.createElement('li');
+                const prof = plan.committees[committeeName].professor;
+                const members = plan.committees[committeeName].members.join(", ");
+                li.innerHTML = `<strong>${committeeName}:</strong> Lead - ${prof}, Members: ${members}`;
+                outputCommittees.appendChild(li);
             }
 
-            // Budget Breakdown
-            outputBudget.innerHTML = '';
-            plan.budgetBreakdown.forEach(item => {
+            // Budget
+            for (const category in plan.budget) {
                 const li = document.createElement('li');
-                li.textContent = `${item.item}: INR ${item.cost}`;
+                li.textContent = `${category}: ₹${plan.budget[category]}`;
                 outputBudget.appendChild(li);
-            });
+            }
 
-            // Letter of Permission
-            outputLetter.textContent = plan.letter;
-
-            // Decoration Suggestions
-            outputDecorations.innerHTML = '';
+            // Decorations
             plan.decorationSuggestions.forEach(suggestion => {
                 const li = document.createElement('li');
                 li.textContent = suggestion;
                 outputDecorations.appendChild(li);
             });
 
-            // Display Sports Seminar Names & Quotes if available
-            if ((plan.eventType === 'Seminar' && (plan.theme.toLowerCase().includes('sport') || plan.theme.toLowerCase().includes('fitness') || plan.theme.toLowerCase().includes('athletic'))) || plan.eventType === 'Sports Event') {
+            // Checklist
+            plan.eventChecklist.forEach(item => {
+                const li = document.createElement('li');
+                li.innerHTML = `<i class="far fa-check-square text-green-500 mr-2"></i>${item}`;
+                outputChecklist.appendChild(li);
+            });
+
+            // Contingency
+            outputContingency.innerHTML = plan.contingencyPlan.split('*').map((item, index) => {
+                if (index === 0) return item;
+                return `<li class="ml-4">${item.trim()}</li>`;
+            }).join('');
+
+
+            // Letter
+            outputLetter.textContent = plan.letterOfPermission || "Letter content will be generated here.";
+
+            // Show/hide sports content
+            if (plan.sportsNames.length > 0) {
                 sportsContentDiv.classList.remove('hidden');
-                outputSportsNames.innerHTML = '';
-                plan.sportsSeminarNames.forEach(name => {
+                plan.sportsNames.forEach(name => {
                     const li = document.createElement('li');
                     li.textContent = name;
                     outputSportsNames.appendChild(li);
                 });
-                outputSportsQuotes.innerHTML = '';
                 plan.sportsQuotes.forEach(quote => {
                     const li = document.createElement('li');
-                    li.textContent = `"${quote}"`;
+                    li.textContent = quote;
                     outputSportsQuotes.appendChild(li);
                 });
             } else {
                 sportsContentDiv.classList.add('hidden');
             }
-        }
 
-        // Download PDF
-        downloadPdfBtn.addEventListener('click', () => {
-            if (!currentPlanData || Object.keys(currentPlanData).length === 0) {
-                showCustomModal("Please generate an event plan first before downloading.", "alert");
-                return;
+            // Display Rooms & Equipment
+            if (plan.suggestedRooms.length > 0) {
+                resourceContentDiv.classList.remove('hidden');
+                plan.suggestedRooms.forEach(room => {
+                    const li = document.createElement('li');
+                    li.textContent = `${room.name} (Capacity: ${room.capacity}${room.capacity !== "N/A" ? ", Features: " + room.features.join(", ") : ""})`;
+                    outputRooms.appendChild(li);
+                });
+            } else {
+                 resourceContentDiv.classList.add('hidden');
+            }
+            if (plan.suggestedEquipment.length > 0) {
+                resourceContentDiv.classList.remove('hidden'); // Ensure parent is visible
+                plan.suggestedEquipment.forEach(eq => {
+                    const li = document.createElement('li');
+                    li.textContent = `${eq.name} (Type: ${eq.type}${eq.quantity !== "N/A" ? ", Quantity: " + eq.quantity : ""})`;
+                    outputEquipment.appendChild(li);
+                });
             }
 
+            // Display Speakers
+            if (plan.suggestedSpeakers.length > 0) {
+                speakerContentDiv.classList.remove('hidden');
+                plan.suggestedSpeakers.forEach(speaker => {
+                    const li = document.createElement('li');
+                    li.textContent = `${speaker.name} (Expertise: ${speaker.expertise.join(", ")})`;
+                    outputSpeakers.appendChild(li);
+                });
+            } else {
+                speakerContentDiv.classList.add('hidden');
+            }
+        }
+
+        // Handle Form Submission
+        eventForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            loadingSpinner.classList.remove('hidden');
+            planOutput.classList.add('hidden');
+
+            const formData = new FormData(eventForm);
+            const data = Object.fromEntries(formData.entries());
+
+            try {
+                const plan = await generateEventPlan(data);
+                displayEventPlan(plan);
+                planOutput.classList.remove('hidden');
+                // Scroll to output
+                planOutput.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            } catch (error) {
+                console.error("Error generating plan:", error);
+                showCustomModal("An error occurred while generating the plan. Please try again.", "alert");
+            } finally {
+                loadingSpinner.classList.add('hidden');
+            }
+        });
+
+        // Generate PDF
+        downloadPdfBtn.addEventListener('click', () => {
             showCustomModal("Generating PDF...", "alert");
             const { jsPDF } = window.jspdf;
             const doc = new jsPDF();
+            let yPos = 20;
+            const margin = 10;
+            const maxWidth = doc.internal.pageSize.width - 2 * margin;
 
-            // Add Event Plan Summary
             doc.setFontSize(22);
-            doc.setTextColor(0, 100, 200); // Blue for headings
-            doc.text("AI University Event Plan Summary - Cool Tone Edition", 105, 20, null, null, "center");
+            doc.text(currentPlanData.eventTitle, margin, yPos);
+            yPos += 10;
             doc.setFontSize(12);
-            doc.setTextColor(224, 224, 224); // Lighter text
-            doc.text(`Event Title: ${currentPlanData.eventTitle}`, 10, 35);
-            doc.text(`Description: ${currentPlanData.eventDescription.substring(0, 100)}...`, 10, 45); // Truncate for summary
-            doc.text(`Date: ${document.getElementById('eventDate').value}`, 10, 55);
-            doc.text(`Mode: ${document.getElementById('mode').value}`, 10, 65);
-            doc.text(`Budget: INR ${document.getElementById('budgetLimit').value}`, 10, 75);
+            doc.text("University Event Plan", margin, yPos);
+            yPos += 15;
 
-            let yOffset = 85; // Starting Y position for new content
+            const addSection = (title, content, isList = false) => {
+                if (!content || (isList && content.length === 0) || (!isList && content.trim() === '')) return;
 
-            // Add Sports Seminar Names & Quotes if applicable
-            if ((currentPlanData.eventType === 'Seminar' && (currentPlanData.theme.toLowerCase().includes('sport') || currentPlanData.theme.toLowerCase().includes('fitness') || currentPlanData.theme.includes('athletic'))) || currentPlanData.eventType === 'Sports Event') {
-                doc.addPage();
-                doc.setFontSize(18);
-                doc.setTextColor(0, 100, 200);
-                doc.text("Sports Seminar Name Ideas", 105, 20, null, null, "center");
-                doc.setFontSize(12);
-                doc.setTextColor(224, 224, 224);
-                yOffset = 30;
-                currentPlanData.sportsSeminarNames.forEach(name => {
-                    doc.text(`- ${name}`, 20, yOffset);
-                    yOffset += 10;
-                });
+                doc.setFontSize(16);
+                doc.setTextColor(0, 150, 255); // Blue for headers
+                doc.text(title, margin, yPos);
+                yPos += 7;
+                doc.setTextColor(0, 0, 0); // Black for text
+                doc.setFontSize(11);
 
-                doc.setFontSize(18);
-                doc.setTextColor(0, 100, 200);
-                doc.text("Motivational Sports Quotes", 105, yOffset + 10, null, null, "center");
-                doc.setFontSize(12);
-                doc.setTextColor(224, 224, 224);
-                yOffset += 20;
-                currentPlanData.sportsQuotes.forEach(quote => {
-                    const splitQuote = doc.splitTextToSize(`"${quote}"`, 170); // Split long quotes
-                    doc.text(splitQuote, 20, yOffset);
-                    yOffset += (splitQuote.length * 10); // Adjust yOffset for multi-line quotes
-                });
-            }
-
-
-            // Add Committees and Assigned Staff Checklist
-            doc.addPage();
-            doc.setFontSize(18);
-            doc.setTextColor(0, 100, 200);
-            doc.text("Required Committees & Assigned Staff Checklist", 105, 20, null, null, "center");
-            doc.setFontSize(12);
-            doc.setTextColor(224, 224, 224);
-            let yPos = 40;
-            for (const committeeName in currentPlanData.committees) {
-                if (currentPlanData.committees.hasOwnProperty(committeeName)) {
-                    const committeeData = currentPlanData.committees[committeeName];
-                    const membersList = committeeData.members.length > 0
-                        ? `: ${committeeData.members.join(', ')}`
-                        : ': (No staff assigned yet)';
-                    const profCount = committeeData.profCount;
-                    const volunteerCount = committeeData.volunteerCount;
-
-                    const lineText = `- ${committeeName}${membersList} (Professors: ${profCount}, Volunteers: ${volunteerCount})`;
-                    const splitText = doc.splitTextToSize(lineText, 170);
-                    doc.text(splitText, 20, yPos);
-                    yPos += (splitText.length * 10); // Adjust yPos for multi-line entries
-                    if (yPos > 280) { // Check for page overflow
-                        doc.addPage();
-                        yPos = 20;
+                if (isList) {
+                    content.forEach(item => {
+                        const lines = doc.splitTextToSize(`• ${item}`, maxWidth);
+                        doc.text(lines, margin + 5, yPos);
+                        yPos += (lines.length * 5); // Line height
+                    });
+                } else if (typeof content === 'object') { // For committees and budget
+                    for (const key in content) {
+                        const lines = doc.splitTextToSize(`${key}: ${content[key]}`, maxWidth);
+                        doc.text(lines, margin + 5, yPos);
+                        yPos += (lines.length * 5);
                     }
+                } else {
+                    const lines = doc.splitTextToSize(content, maxWidth);
+                    doc.text(lines, margin, yPos);
+                    yPos += (lines.length * 5);
                 }
+                yPos += 10; // Space after section
+            };
+
+            addSection("Event Description", currentPlanData.eventDescription);
+            addSection("Suggested Venues/Rooms", currentPlanData.suggestedRooms.map(r => `${r.name} (Capacity: ${r.capacity}, Features: ${r.features.join(", ")})`), true);
+            addSection("Suggested Equipment", currentPlanData.suggestedEquipment.map(eq => `${eq.name} (Type: ${eq.type}, Quantity: ${eq.quantity})`), true);
+            addSection("Suggested Speakers/Guests", currentPlanData.suggestedSpeakers.map(s => `${s.name} (Expertise: ${s.expertise.join(", ")})`), true);
+
+            // Schedule table
+            if (currentPlanData.schedule && currentPlanData.schedule.length > 0) {
+                doc.setFontSize(16);
+                doc.setTextColor(0, 150, 255);
+                doc.text("Sample Schedule", margin, yPos);
+                yPos += 7;
+                doc.setTextColor(0, 0, 0);
+                doc.setFontSize(10);
+
+                const tableColumn = ["Time", "Activity", "Speaker/Performer"];
+                const tableRows = currentPlanData.schedule.map(item => [item.time, item.activity, item.speaker || 'N/A']);
+
+                doc.autoTable({
+                    startY: yPos,
+                    head: [tableColumn],
+                    body: tableRows,
+                    theme: 'grid',
+                    styles: { fontSize: 9, cellPadding: 2, overflow: 'linebreak' },
+                    headStyles: { fillColor: [0, 34, 51], textColor: [255, 255, 255], fontStyle: 'bold' },
+                    bodyStyles: { fillColor: [240, 240, 240], textColor: [0, 0, 0] },
+                    alternateRowStyles: { fillColor: [250, 250, 250] },
+                    margin: { left: margin, right: margin }
+                });
+                yPos = doc.autoTable.previous.finalY + 10;
             }
 
-            // Add Budget Breakdown
-            doc.addPage();
-            doc.setFontSize(18);
-            doc.setTextColor(0, 100, 200);
-            doc.text("Budget Breakdown", 105, 20, null, null, "center");
-            doc.setFontSize(12);
-            doc.setTextColor(224, 224, 224);
-            yPos = 40;
-            currentPlanData.budgetBreakdown.forEach(item => {
-                doc.text(`- ${item.item}: INR ${item.cost}`, 20, yPos);
+            addSection("Poster Design Ideas", currentPlanData.posterIdeas, true);
+            addSection("Social Media Caption", currentPlanData.socialMediaCaption);
+            addSection("Hashtags", currentPlanData.hashtags);
+            addSection("Email Draft", currentPlanData.emailDraft);
+            addSection("Press Release Snippet", currentPlanData.pressReleaseSnippet);
+
+            // Committees (complex object, handle specifically)
+            if (currentPlanData.committees) {
+                doc.setFontSize(16);
+                doc.setTextColor(0, 150, 255);
+                doc.text("Required Committees & Assigned Staff", margin, yPos);
+                yPos += 7;
+                doc.setTextColor(0, 0, 0);
+                doc.setFontSize(11);
+                for (const committeeName in currentPlanData.committees) {
+                    const prof = currentPlanData.committees[committeeName].professor;
+                    const members = currentPlanData.committees[committeeName].members.join(", ");
+                    const text = `• ${committeeName}: Lead - ${prof}, Members: ${members}`;
+                    const lines = doc.splitTextToSize(text, maxWidth);
+                    doc.text(lines, margin + 5, yPos);
+                    yPos += (lines.length * 5);
+                }
                 yPos += 10;
-            });
+            }
 
-            // Add Letter of Permission
+            addSection("Budget Breakdown", currentPlanData.budget, false); // Pass as object, not list
+            addSection("Decoration Suggestions", currentPlanData.decorationSuggestions, true);
+            addSection("Event Planning Checklist", currentPlanData.eventChecklist, true);
+            addSection("Contingency Planning", currentPlanData.contingencyPlan);
+
+            // Letter of Permission
             doc.addPage();
+            yPos = 20;
             doc.setFontSize(18);
-            doc.setTextColor(0, 100, 200);
-            doc.text("Letter of Permission", 105, 20, null, null, "center");
-            doc.setFontSize(12);
-            doc.setTextColor(224, 224, 224);
-            const letterText = currentPlanData.letter;
-            const splitText = doc.splitTextToSize(letterText, 180); // Max width 180mm
-            doc.text(splitText, 15, 30);
+            doc.setTextColor(0, 150, 255);
+            doc.text("Letter of Permission", margin, yPos);
+            yPos += 10;
+            doc.setTextColor(0, 0, 0);
+            doc.setFontSize(11);
+            const letterLines = doc.splitTextToSize(currentPlanData.letterOfPermission, maxWidth);
+            doc.text(letterLines, margin, yPos);
 
-            doc.save("Event_Plan_Cool_Tone.pdf");
+
+            doc.save('EventPlan.pdf');
+            customModal.classList.remove('show'); // Close modal
             showCustomModal("PDF generated successfully!", "alert");
         });
 
-        // Edit Plan
+
+        // Edit Plan Button
         editPlanBtn.addEventListener('click', () => {
-            showCustomModal("Do you want to edit the current plan?", "confirm", () => {
+            showCustomModal("Are you sure you want to edit the plan? This will clear the current output and return to the form.", "confirm", () => {
                 planOutput.classList.add('hidden');
-                eventForm.classList.remove('hidden');
-            });
-        });
-
-        // Start New Plan
-        startNewBtn.addEventListener('click', () => {
-            showCustomModal("Are you sure you want to start a new plan? All current data will be lost.", "confirm", () => {
-                eventForm.reset(); // Clear form fields
-                venueGroup.classList.add('hidden'); // Hide venue field
+                eventForm.reset();
+                venueGroup.classList.add('hidden'); // Hide venue if mode isn't set
                 venueInput.removeAttribute('required');
-                planOutput.classList.add('hidden'); // Hide output section
-                eventForm.classList.remove('hidden'); // Show form
-                // Clear any validation highlights
-                eventForm.querySelectorAll('[required]').forEach(input => {
-                    input.classList.remove('border-red-500', 'ring-2', 'ring-red-200');
-                });
-                currentPlanData = {}; // Clear stored plan data
-                sportsContentDiv.classList.add('hidden'); // Hide sports section
+                document.getElementById('eventType').focus(); // Focus on first input
             });
         });
 
-        // Initialize date input to today's date
-        document.addEventListener('DOMContentLoaded', () => {
-            const today = new Date();
-            const yyyy = today.getFullYear();
-            const mm = String(today.getMonth() + 1).padStart(2, '0'); // Months start at 0!
-            const dd = String(today.getDate()).padStart(2, '0');
-            document.getElementById('eventDate').value = `${yyyy}-${mm}-${dd}`;
+        // Start New Button
+        startNewBtn.addEventListener('click', () => {
+            showCustomModal("Are you sure you want to start a new plan? This will clear all current inputs and outputs.", "confirm", () => {
+                planOutput.classList.add('hidden');
+                eventForm.reset();
+                venueGroup.classList.add('hidden'); // Hide venue if mode isn't set
+                venueInput.removeAttribute('required');
+                document.getElementById('eventType').focus(); // Focus on first input
+            });
         });
+
+        // Set initial letter content (can be overridden by AI)
+        const generateLetter = (formData) => {
+            const { eventType, theme, eventDate, duration, venue, mode, audience } = formData;
+            const formattedDate = new Date(eventDate).toLocaleDateString('en-IN', {
+                year: 'numeric', month: 'long', day: 'numeric'
+            });
+            const eventLocation = (mode === 'Offline' || mode === 'Hybrid') ? `at ${venue || 'the University Campus'}` : 'virtually via an online platform';
+
+            return `[Your University Name/Department Letterhead]
+
+[Date: ${new Date().toLocaleDateString('en-IN')}]
+
+To,
+The Dean/Registrar,
+[Your University Name],
+[University Address]
+
+Subject: Request for Permission to Organize "${theme} - ${eventType} ${eventDate.split('-')[0]}"
+
+Respected Sir/Madam,
+
+We, the [Your Department/Club Name], are pleased to propose the organization of a **${eventType}** titled **"${theme} - ${eventType} ${eventDate.split('-')[0]}"**. This event is planned for **${formattedDate}**, spanning **${duration} day(s)**, and will be conducted **${eventLocation}**.
+
+The primary objective of this ${eventType} is to [e.g., "enhance knowledge and skills in ${theme} for ${audience}", "foster cultural exchange among students", "promote healthy competition and sportsmanship"]. We anticipate participation from ${audience} and believe this event will significantly contribute to their academic and personal growth.
+
+We have outlined a comprehensive plan covering all aspects, including:
+1.  **Event Schedule:** [Briefly mention key activities, e.g., "keynote speeches, interactive workshops, and competitions"].
+2.  **Target Audience:** ${audience}.
+3.  **Resource Requirements:** We will require access to [mention general resources, e.g., "University Auditorium, sound systems, projectors, and IT support"].
+4.  **Budget Estimate:** An estimated budget of INR ${parseFloat(formData.budgetLimit).toLocaleString('en-IN')} has been prepared to cover all expenditures.
+
+We assure you that all necessary arrangements will be made to ensure the smooth and successful execution of the event, adhering to all university guidelines and protocols. We are committed to maintaining discipline and ensuring the safety of all participants.
+
+We kindly request your esteemed permission and support to organize this event. We are available to discuss the detailed plan at your convenience.
+
+Thanking you,
+
+Sincerely,
+
+[Your Name/Head of Organizing Committee]
+[Your Designation/Department/Club]
+[Contact Information]`;
+        };
+        // Initial letter generation on page load (or when data is available)
+        eventForm.addEventListener('change', () => {
+            const formData = new FormData(eventForm);
+            const data = Object.fromEntries(formData.entries());
+            // Only generate a preview if critical fields are filled
+            if (data.eventType && data.theme && data.eventDate && data.duration && data.budgetLimit && data.audience && data.mode) {
+                // currentPlanData.letterOfPermission = generateLetter(data); // This will be set inside generateEventPlan
+            }
+        });
+
+        // Ensure jsPDF and html2canvas are loaded (for modern browsers, await for script loading)
+        // For older browsers or local files, you might need a more robust loading mechanism.
+        // This is a simple check to prevent immediate errors if libraries aren't ready.
+        if (typeof window.jspdf === 'undefined' || typeof window.html2canvas === 'undefined') {
+            console.warn("jsPDF or html2canvas not loaded. PDF download might not work.");
+        }
     </script>
 </body>
 </html>
