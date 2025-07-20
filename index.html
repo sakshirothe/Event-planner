@@ -1213,7 +1213,7 @@ Sincerely,
             let yOffset = 85; // Starting Y position for new content
 
             // Add Sports Seminar Names & Quotes if applicable
-            if ((currentPlanData.eventType === 'Seminar' && (currentPlanData.theme.toLowerCase().includes('sport') || currentPlanData.theme.toLowerCase().includes('fitness') || currentPlanData.theme.toLowerCase().includes('athletic'))) || currentPlanData.eventType === 'Sports Event') {
+            if ((currentPlanData.eventType === 'Seminar' && (currentPlanData.theme.toLowerCase().includes('sport') || currentPlanData.theme.toLowerCase().includes('fitness') || currentPlanData.theme.includes('athletic'))) || currentPlanData.eventType === 'Sports Event') {
                 doc.addPage();
                 doc.setFontSize(18);
                 doc.setTextColor(0, 100, 200);
